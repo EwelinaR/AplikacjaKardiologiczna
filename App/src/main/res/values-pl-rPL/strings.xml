@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aplikacja Kardiologiczna</string>
+    <string name="all_heart">Serce</string>
+    <string name="all_tasks">Zadania</string>
+</resources>
