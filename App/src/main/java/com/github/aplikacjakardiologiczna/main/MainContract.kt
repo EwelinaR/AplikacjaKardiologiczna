@@ -1,11 +1,17 @@
 package com.github.aplikacjakardiologiczna.main
 
-interface MainContract {
-    interface View {
+import com.github.aplikacjakardiologiczna.BasePresenter
+import com.github.aplikacjakardiologiczna.BaseView
 
+interface MainContract {
+    interface View : BaseView<Presenter> {
+        fun showHeartView()
+        fun showTasksView()
     }
 
-    interface Presenter {
-
+    interface Presenter : BasePresenter {
+        fun onViewCreated()
+        fun onHeartTabClicked()
+        fun onTasksTabClicked()
     }
 }
