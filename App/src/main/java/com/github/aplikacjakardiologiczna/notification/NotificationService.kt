@@ -16,7 +16,7 @@ class NotificationService : IntentService("NotificationService") {
     private lateinit var notification: Notification
 
     companion object {
-        private const val NOTIFICATION_ID = 112
+        const val NOTIFICATION_ID = 112
         private const val CHANNEL_ID = "aplikacjakardiologiczna_notification_tasks"
         private const val NOTIFY_TITLE = "Masz niewykonane zadania na dzisiaj"
         private const val NOTIFY_TEXT = "Wykonaj zadania aby prowadzić zdrowy tryb życia."
@@ -57,6 +57,15 @@ class NotificationService : IntentService("NotificationService") {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+        val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
+            action = "Check task as done"
+            putExtra("task_id","1")
+        }
+        val buttonPendingIntent = PendingIntent.getBroadcast(this,0,buttonIntent,0)
+
+
+
         val builder = NotificationCompat.Builder(this, CHANNEL_ID
             ).apply {
                 setSmallIcon(R.drawable.notify_heart)
@@ -65,7 +74,9 @@ class NotificationService : IntentService("NotificationService") {
                 setContentText(NOTIFY_TEXT)
                 setAutoCancel(true)
                 setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            }
+                addAction(R.drawable.notify_heart, "zrobione!",
+                        buttonPendingIntent)
+        }
         notification = builder.build()
         startForeground(1, notification)
     }
