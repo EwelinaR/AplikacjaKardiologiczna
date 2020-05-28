@@ -9,11 +9,12 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import java.util.*
 
-class NotificationUtils {
+class NotificationUtils(private var activity: Activity) {
 
-    fun setNotification(activity: Activity) {
+    private lateinit var alarmManager : AlarmManager
+
+    fun setNotification() {
         Log.i("NOTIFICATION", "create notification")
-        val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(
             activity.applicationContext,
             AlarmNotificationReceiver::class.java
@@ -26,12 +27,9 @@ class NotificationUtils {
             set(Calendar.MINUTE, 1)
         }
 
-        val pendingIntent = PendingIntent.getBroadcast(
-            activity,
-            10,
-            alarmIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT
-        )
+        alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+        val pendingIntent = createPendingIntent(PendingIntent.FLAG_CANCEL_CURRENT)
+
         // for tests: run notification after a few seconds
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
             SystemClock.elapsedRealtime() + 1000*10,
@@ -42,14 +40,17 @@ class NotificationUtils {
         //    AlarmManager.INTERVAL_DAY, pendingIntent)
     }
 
-    fun isAlarmUp(activity: Activity) : Boolean {
-        val alarmUp = PendingIntent.getBroadcast(
+    private fun createPendingIntent(flagCancelCurrent: Int): PendingIntent?{
+        return PendingIntent.getBroadcast(
             activity,
             10,
-            Intent(activity.applicationContext,
-                AlarmNotificationReceiver::class.java),
-            PendingIntent.FLAG_NO_CREATE
-        ) != null
+            Intent(activity.applicationContext, AlarmNotificationReceiver::class.java),
+            flagCancelCurrent
+        )
+    }
+
+    fun isAlarmUp() : Boolean {
+        val alarmUp = createPendingIntent(PendingIntent.FLAG_NO_CREATE) != null
 
         if (alarmUp) {
             Log.i("ALARM", "Alarm is already active")
@@ -57,5 +58,12 @@ class NotificationUtils {
         }
         Log.i("ALARM", "Alarm is inactive")
         return false
+    }
+
+    fun cancelAlarm(){
+        if(this::alarmManager.isInitialized){
+            alarmManager.cancel(createPendingIntent(PendingIntent.FLAG_CANCEL_CURRENT))
+            Log.i("ALARM", "deactivate alarm")
+        }
     }
 }

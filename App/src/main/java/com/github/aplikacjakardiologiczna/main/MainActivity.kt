@@ -33,8 +33,10 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             }
             false
         }
-        if(!NotificationUtils().isAlarmUp(this))
-            NotificationUtils().setNotification(this@MainActivity)
+        val notify = NotificationUtils(this)
+
+        if(!notify.isAlarmUp())
+            notify.setNotification()
     }
 
     override fun onDestroy() {

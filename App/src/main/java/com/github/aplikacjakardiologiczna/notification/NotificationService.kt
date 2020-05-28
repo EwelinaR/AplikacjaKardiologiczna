@@ -19,7 +19,6 @@ class NotificationService : IntentService("NotificationService") {
         const val NOTIFICATION_ID = 112
         private const val CHANNEL_ID = "aplikacjakardiologiczna_notification_tasks"
         private const val NOTIFY_TITLE = "Masz niewykonane zadania na dzisiaj"
-        private const val NOTIFY_TEXT = "Wykonaj zadania aby prowadzić zdrowy tryb życia."
         private const val CHANNEL_NAME = "reminder"
         private const val CHANNEL_DESCRIPTION = "Reminder about tasks"
     }
@@ -46,7 +45,6 @@ class NotificationService : IntentService("NotificationService") {
         Log.i("NOTIFICATION", "Showing new notification")
         createChannel()
         buildNotification()
-
         with(NotificationManagerCompat.from(this)) {
             notify(NOTIFICATION_ID, notification)
         }
@@ -64,14 +62,14 @@ class NotificationService : IntentService("NotificationService") {
         }
         val buttonPendingIntent = PendingIntent.getBroadcast(this,0,buttonIntent,0)
 
-
+        val activityDescription = "-> Zrób 10 przysiadów <-"
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID
             ).apply {
                 setSmallIcon(R.drawable.notify_heart)
                 setContentIntent(pendingIntent)
                 setContentTitle(NOTIFY_TITLE)
-                setContentText(NOTIFY_TEXT)
+                setContentText(activityDescription)
                 setAutoCancel(true)
                 setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 addAction(R.drawable.notify_heart, "zrobione!",
