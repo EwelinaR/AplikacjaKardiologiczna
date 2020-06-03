@@ -11,7 +11,6 @@ import com.github.aplikacjakardiologiczna.PatternAdapter
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.TaskPattern
 import kotlinx.android.synthetic.main.fragment_tasks.*
-import kotlinx.android.synthetic.main.tasks_list.*
 
 
 class TasksFragment : Fragment(), TasksContract.View {
