@@ -3,4 +3,7 @@
     <string name="app_name">Aplikacja Kardiologiczna</string>
     <string name="all_heart">Serce</string>
     <string name="all_tasks">Zadania</string>
+    <string name="completed_task_toast">Gratuluję, zadanie wykoane!</string>
+    <string name="task_notify_title">Masz niewykonane zadania na dzisiaj</string>
+    <string name="notify_button">Zrobione!</string>
 </resources>

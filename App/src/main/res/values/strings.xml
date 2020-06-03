@@ -2,4 +2,7 @@
     <string name="app_name">Aplikacja Kardiologiczna</string>
     <string name="all_heart">Heart</string>
     <string name="all_tasks">Tasks</string>
+    <string name="completed_task_toast">Congratulations, task completed!</string>
+    <string name="task_notify_title">You have not finished tasks</string>
+    <string name="notify_button">Done!</string>
 </resources>
