@@ -5,12 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.aplikacjakardiologiczna.PatternAdapter
 
 import com.github.aplikacjakardiologiczna.R
-import com.github.aplikacjakardiologiczna.TaskPattern
-import kotlinx.android.synthetic.main.fragment_tasks.*
+import com.github.aplikacjakardiologiczna.TaskDataClass
 
 
 class TasksFragment : Fragment(), TasksContract.View {
@@ -33,8 +30,8 @@ class TasksFragment : Fragment(), TasksContract.View {
     }
 
 
-    private fun generateList(size : Int) : List<TaskPattern> {
-        val list = ArrayList<TaskPattern>()
+    private fun generateList(size : Int) : List<TaskDataClass> {
+        val list = ArrayList<TaskDataClass>()
 
         for(i in 0 until size) {
             val drawable = when (i % 4) {
@@ -44,7 +41,7 @@ class TasksFragment : Fragment(), TasksContract.View {
                 else -> R.drawable.ic_pool
             }
 
-            val task = TaskPattern(drawable, "Task $i", "Line 2")
+            val task = TaskDataClass(drawable, "Task $i", "Line 2")
             list+=task
         }
 
