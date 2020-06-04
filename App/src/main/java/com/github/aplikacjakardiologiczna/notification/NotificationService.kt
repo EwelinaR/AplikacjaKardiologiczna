@@ -54,15 +54,16 @@ class NotificationService : IntentService("NotificationService") {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
-            action = "Check task as done"
-            putExtra("task_id","1")
-        }
-        val buttonPendingIntent = PendingIntent.getBroadcast(this,0,buttonIntent,0)
+        val  taskId = "task_id"
 
         // TODO connect with DB and get not completed task
+        val activityId = 33
         val activityDescription = "-> Zrób 10 przysiadów <-"
+
+        val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
+            putExtra(taskId, activityId.toString())
+        }
+        val buttonPendingIntent = PendingIntent.getBroadcast(this,0,buttonIntent,0)
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID
             ).apply {
