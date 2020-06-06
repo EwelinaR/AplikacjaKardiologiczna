@@ -3,4 +3,5 @@
     <string name="app_name">Aplikacja Kardiologiczna</string>
     <string name="all_heart">Serce</string>
     <string name="all_tasks">Zadania</string>
+    <string name="app_slogan">Przyszły slogan naszej aplikacji</string>
 </resources>
