@@ -10,7 +10,7 @@ interface TaskDao {
     @Query("SELECT * FROM task")
     fun getAll(): List<Task>
 
-    @Query("SELECT * FROM task WHERE uid IN (:taskIds)")
+    @Query("SELECT * FROM task WHERE id IN (:taskIds)")
     fun loadAllByIds(taskIds: IntArray): List<Task>
 
     @Query("SELECT * FROM task WHERE first_name LIKE :first AND " +
