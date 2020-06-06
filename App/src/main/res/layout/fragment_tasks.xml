@@ -5,32 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".tasks.TasksFragment">
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
-
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/all_tasks" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="4dp"
-            tools:listitem="@layout/task_item"
-            />
-
-    </RelativeLayout>
+        android:clipToPadding="false"
+        android:padding="4dp"
+        tools:listitem="@layout/task_item" />
 
 </FrameLayout>
