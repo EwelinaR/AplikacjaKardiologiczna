@@ -13,8 +13,8 @@ interface TaskDao {
     @Query("SELECT * FROM task WHERE id IN (:taskIds)")
     fun loadAllByIds(taskIds: IntArray): List<Task>
 
-    @Query("SELECT * FROM task WHERE task_name LIKE :t_name")
-    fun findByName(t_name: String): Task
+    @Query("SELECT * FROM task WHERE task_name LIKE :name")
+    fun findByName(name: String): Task
 
     @Insert
     fun insertAll(tasks: Task)

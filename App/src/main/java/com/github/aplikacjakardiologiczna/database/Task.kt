@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Task(
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "task_name") val taskName: String?,
-    @ColumnInfo(name = "task_description") val taskDescription: ActivityManager.TaskDescription,
-    @ColumnInfo(name = "time_or_number") val isTime: Boolean,   // czy warunek wykonania zadania będzie podany w minutach czy w liczbie powtórzeń
-    @ColumnInfo(name = "duration") val taskDuration: Int    // ile minut lub razy należy wykonywać zadanie
+    @ColumnInfo(name = "task_name") val name: String?,
+    @ColumnInfo(name = "description") val description: ActivityManager.TaskDescription,
+    @ColumnInfo(name = "time_or_number") val isTime: Boolean,   // is the task duration specified in minutes (true) or number of repeats (false)
+    @ColumnInfo(name = "duration") val duration: Int
 )
