@@ -16,6 +16,9 @@ interface TaskDao {
     @Query("SELECT * FROM task WHERE task_name LIKE :name")
     fun findByName(name: String): Task
 
+    @Query("SELECT * FROM task WHERE category Like :cat")
+    fun findByCategory(cat: Category): List<Task>
+
     @Insert
     fun insertAll(tasks: Task)
 
