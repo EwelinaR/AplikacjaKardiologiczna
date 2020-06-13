@@ -6,4 +6,8 @@
     <string name="task_notify_title">You have not completed tasks</string>
     <string name="notify_button">Done!</string>
     <string name="app_slogan">Future slogan of our app</string>
+    <string name="category_exercise">"physical exercises "</string>
+    <string name="category_food">healthy eating</string>
+    <string name="category_medicine">taking medicines</string>
+    <string name="category_pressure">pressure measurement</string>
 </resources>

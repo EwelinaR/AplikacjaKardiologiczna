@@ -7,4 +7,8 @@
     <string name="task_notify_title">Masz niewykonane zadania na dzisiaj</string>
     <string name="notify_button">Zrobione!</string>
     <string name="app_slogan">Przyszły slogan naszej aplikacji</string>
+    <string name="category_exercise">ćwiczenia fizyczne</string>
+    <string name="category_food">zdrowe odżywianie</string>
+    <string name="category_medicine">przyjmowanie leków</string>
+    <string name="category_pressure">pomiar ciśnienia</string>
 </resources>

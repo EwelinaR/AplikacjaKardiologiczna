@@ -5,24 +5,30 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.github.aplikacjakardiologiczna.database.dao.TaskDao
+import com.github.aplikacjakardiologiczna.database.entity.Task
 
 
-@Database(entities = arrayOf(Task::class), version = 1)
+@Database(entities = [Task::class], version = 1)
 @TypeConverters(Converter::class)
-
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
 
-    companion object{
+    companion object {
         private var INSTANCE: AppDatabase? = null
-        fun getInstance(context: Context): AppDatabase{
-            if (INSTANCE == null){
+        private const val DATABASE_NAME = "cardio_app_database"
+        private const val DATABASE_INITIAL = "database/pre_populated.db"
+
+        fun getInstance(context: Context): AppDatabase {
+            if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    "CardioAppDatabase")
-                    .build()
+                        context,
+                        AppDatabase::class.java,
+                        DATABASE_NAME)
+                        .fallbackToDestructiveMigration()
+                        .createFromAsset(DATABASE_INITIAL)
+                        .build()
             }
 
             return INSTANCE as AppDatabase
