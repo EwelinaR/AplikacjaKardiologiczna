@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.github.aplikacjakardiologiczna.R
+import com.github.aplikacjakardiologiczna.model.database.AppDatabase
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import kotlinx.android.synthetic.main.fragment_tasks.*
 
 
@@ -19,7 +21,7 @@ class TasksFragment : Fragment(), TasksContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setPresenter(TasksPresenter(this))
+        setPresenter(TasksPresenter(this, TaskRepository.getInstance(AppDatabase.getInstance(requireContext()).taskDao())))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

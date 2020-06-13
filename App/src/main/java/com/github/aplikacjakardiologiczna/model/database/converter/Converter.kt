@@ -1,6 +1,7 @@
-package com.github.aplikacjakardiologiczna.database
+package com.github.aplikacjakardiologiczna.model.database.converter
 
 import androidx.room.TypeConverter
+import com.github.aplikacjakardiologiczna.model.database.Category
 
 class Converter {
 

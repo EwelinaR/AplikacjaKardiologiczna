@@ -1,11 +1,11 @@
-package com.github.aplikacjakardiologiczna.database.dao
+package com.github.aplikacjakardiologiczna.model.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.github.aplikacjakardiologiczna.database.Category
-import com.github.aplikacjakardiologiczna.database.entity.Task
+import com.github.aplikacjakardiologiczna.model.database.Category
+import com.github.aplikacjakardiologiczna.model.database.entity.Task
 
 @Dao
 interface TaskDao {

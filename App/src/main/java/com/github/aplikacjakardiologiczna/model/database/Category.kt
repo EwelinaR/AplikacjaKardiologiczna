@@ -1,4 +1,4 @@
-package com.github.aplikacjakardiologiczna.database
+package com.github.aplikacjakardiologiczna.model.database
 
 import com.github.aplikacjakardiologiczna.R
 

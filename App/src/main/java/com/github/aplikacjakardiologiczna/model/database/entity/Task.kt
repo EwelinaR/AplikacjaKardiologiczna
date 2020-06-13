@@ -1,9 +1,9 @@
-package com.github.aplikacjakardiologiczna.database.entity
+package com.github.aplikacjakardiologiczna.model.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.aplikacjakardiologiczna.database.Category
+import com.github.aplikacjakardiologiczna.model.database.Category
 
 @Entity
 data class Task(
