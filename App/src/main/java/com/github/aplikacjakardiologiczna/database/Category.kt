@@ -1,10 +1,10 @@
 package com.github.aplikacjakardiologiczna.database
 
-enum class Category(val value: String) {
+import com.github.aplikacjakardiologiczna.R
 
-    EXCERCISE("ćwiczenia fizyczne"),
-    FOOD("zdrowe odżywianie"),
-    MEDICINE("przyjmowanie leków"),
-    PULSE("pomiar ciśnienia")
-
+enum class Category(val stringResourceId: Int, val categoryIcon: Int) {
+    EXERCISE(R.string.category_exercise, R.drawable.ic_bike),
+    FOOD(R.string.category_food, R.drawable.ic_fitness_center),
+    MEDICINE(R.string.category_medicine, R.drawable.ic_run),
+    PRESSURE(R.string.category_pressure, R.drawable.ic_pool)
 }
