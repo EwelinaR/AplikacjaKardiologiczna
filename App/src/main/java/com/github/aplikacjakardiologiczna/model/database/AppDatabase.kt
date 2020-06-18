@@ -1,12 +1,13 @@
-package com.github.aplikacjakardiologiczna.database
+package com.github.aplikacjakardiologiczna.model.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.github.aplikacjakardiologiczna.database.dao.TaskDao
-import com.github.aplikacjakardiologiczna.database.entity.Task
+import com.github.aplikacjakardiologiczna.model.database.converter.Converter
+import com.github.aplikacjakardiologiczna.model.database.dao.TaskDao
+import com.github.aplikacjakardiologiczna.model.database.entity.Task
 
 
 @Database(entities = [Task::class], version = 1)
