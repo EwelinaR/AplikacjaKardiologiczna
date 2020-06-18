@@ -6,6 +6,7 @@ import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.TaskView
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class TasksPresenter(view: TasksContract.View, private val taskRepository: TaskRepository,
+                     private val userTaskRepository: UserTaskRepository,
                      private val uiContext: CoroutineContext = Dispatchers.Main) : TasksContract.Presenter, CoroutineScope {
 
     private var view: TasksContract.View? = view
