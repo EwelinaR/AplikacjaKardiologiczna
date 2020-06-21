@@ -21,6 +21,14 @@ class TaskRepository private constructor(
         }
     }
 
+    suspend fun getTaskCount(): Result<Int> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(taskDao.countAllTasks())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
     companion object {
         private var INSTANCE: TaskRepository? = null
 
