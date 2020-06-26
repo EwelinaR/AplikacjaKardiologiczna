@@ -6,6 +6,8 @@ import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.TaskView
+import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class TasksPresenter(view: TasksContract.View, private val taskRepository: TaskRepository,
+                     private val userTaskRepository: UserTaskRepository,
                      private val uiContext: CoroutineContext = Dispatchers.Main) : TasksContract.Presenter, CoroutineScope {
 
     private var view: TasksContract.View? = view
@@ -28,6 +31,9 @@ class TasksPresenter(view: TasksContract.View, private val taskRepository: TaskR
 
         // TODO Only for demonstration
         getAllTasks()
+        countTasks()
+        insertTasks()
+        getUserTasks()
 
         tasks = arrayListOf(
                 TaskView(R.drawable.ic_bike, "Task 1", "Line 2"),
@@ -45,7 +51,37 @@ class TasksPresenter(view: TasksContract.View, private val taskRepository: TaskR
         when (val result = taskRepository.getAllTasks()) {
             is Result.Success<List<Task>> -> {
                 /* update UI when success */
-                Log.d("getAllTasks", result.data.toString())
+                Log.i("getAllTasks", result.data.toString())
+            }
+            is Result.Error -> { /* update UI when error */ }
+        }
+    }
+
+    private fun countTasks(): Job = launch {
+        when (val result = taskRepository.getTaskCount()) {
+            is Result.Success<Int> -> {
+                /* update UI when success */
+                Log.i("countTask", result.data.toString())
+            }
+            is Result.Error -> { /* update UI when error */ }
+        }
+    }
+
+    private fun insertTasks(): Job = launch {
+        when (val result = userTaskRepository.insertUserTask(arrayOf(1, 2))) {
+            is Result.Success<Unit> -> {
+                /* update UI when success */
+                Log.i("insert", result.data.toString())
+            }
+            is Result.Error -> { /* update UI when error */ }
+        }
+    }
+
+    private fun getUserTasks(): Job = launch {
+        when (val result = userTaskRepository.getTodayTasks()) {
+            is Result.Success<List<UserTask>> -> {
+                /* update UI when success */
+                Log.i("TODAY'S TASKS", result.data.toString())
             }
             is Result.Error -> { /* update UI when error */ }
         }
