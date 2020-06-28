@@ -14,7 +14,7 @@ class Converter {
 
     @TypeConverter
     fun toTimestamp(value: Long): Date? {    // Long to Date
-        return if(value > 0) Date(value)
+        return if (value > 0) Date(value)
         else return null
     }
 

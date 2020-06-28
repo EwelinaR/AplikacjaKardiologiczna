@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.model.database.repository
 
+import androidx.core.graphics.scaleMatrix
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDao
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
@@ -7,50 +8,26 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class UserTaskRepository private constructor(
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val userTaskDao: UserTaskDao
+        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+        private val userTaskDao: UserTaskDao
 ) {
 
-    suspend fun getByDate(date: Date): Result<List<UserTask>> = withContext(ioDispatcher) {
+    suspend fun getTasksForToday(): Result<List<UserTask>> = withContext(ioDispatcher) {
+        val todaysDate: Calendar = Calendar.getInstance()
+        val todaysDateStart = atStartOfDay(todaysDate.time)
+        val todaysDateEnd = atEndOfDay(todaysDate.time)
+
         return@withContext try {
-            Result.Success(userTaskDao.findByDate(date.time))
+            Result.Success(userTaskDao.loadAllInDate(todaysDateStart, todaysDateEnd))
         } catch (e: Exception) {
             Result.Error(e)
         }
     }
 
-    suspend fun getTodayTasks(): Result<List<UserTask>> = withContext(ioDispatcher) {
-        // dla testów użyta jest data jutrzejsza data, bo zadania będą dodawane na przyszły dzień
-        val tomorrowDate: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            add(Calendar.DAY_OF_MONTH, 1)
-        }
-        return@withContext try {
-            Result.Success(userTaskDao.findByDate(tomorrowDate.time.time))
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
-    }
-
-    suspend fun insertUserTask(tasksId: Array<Int>): Result<Unit> = withContext(ioDispatcher) {
-        val userTasks: MutableList<UserTask> = ArrayList()
-
-        val tomorrowDate: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            add(Calendar.DAY_OF_MONTH, 1)
-        }
-        for(id in tasksId)
-            userTasks.add(UserTask(id, tomorrowDate.time))
-        userTaskDao.insertAll(userTasks)
-
+    suspend fun insertUserTasks(userTasks: List<UserTask>): Result<Unit> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(userTaskDao.insertAll(userTasks))
         } catch (e: Exception) {
@@ -63,7 +40,27 @@ class UserTaskRepository private constructor(
 
         fun getInstance(userTaskDao: UserTaskDao): UserTaskRepository {
             return INSTANCE ?: UserTaskRepository(userTaskDao = userTaskDao)
-                .apply { INSTANCE = this }
+                    .apply { INSTANCE = this }
         }
+    }
+
+    private fun atEndOfDay(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar[Calendar.HOUR_OF_DAY] = 23
+        calendar[Calendar.MINUTE] = 59
+        calendar[Calendar.SECOND] = 59
+        calendar[Calendar.MILLISECOND] = 999
+        return calendar.time
+    }
+
+    private fun atStartOfDay(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar[Calendar.HOUR_OF_DAY] = 0
+        calendar[Calendar.MINUTE] = 0
+        calendar[Calendar.SECOND] = 0
+        calendar[Calendar.MILLISECOND] = 0
+        return calendar.time
     }
 }
