@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.model.database.repository
 
+import android.util.Log
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDao
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
@@ -17,6 +18,7 @@ class UserTaskRepository private constructor(
         return@withContext try {
             Result.Success(userTaskDao.insertAll(userTasks))
         } catch (e: Exception) {
+            Log.e("error", "insertUserTasks() failed", e)
             Result.Error(e)
         }
     }

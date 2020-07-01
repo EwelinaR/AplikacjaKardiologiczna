@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTaskDetails
-import java.util.*
+import java.util.Date
 
 @Dao
 interface UserTaskDetailsDao {

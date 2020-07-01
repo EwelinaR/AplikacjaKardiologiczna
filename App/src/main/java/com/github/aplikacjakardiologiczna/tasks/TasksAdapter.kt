@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.aplikacjakardiologiczna.R
-import kotlinx.android.synthetic.main.task_item.view.*
+import kotlinx.android.synthetic.main.task_item.view.image_view_task_item
+import kotlinx.android.synthetic.main.task_item.view.text_view_task_item_line1
+import kotlinx.android.synthetic.main.task_item.view.text_view_task_item_line2
 
 
 class TasksAdapter(private val presenter: TasksContract.Presenter) : RecyclerView.Adapter<TasksAdapter.TasksViewHolder>() {

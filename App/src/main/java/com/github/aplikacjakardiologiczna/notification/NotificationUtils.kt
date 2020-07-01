@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
-import java.util.*
+import java.util.Calendar
 
 class NotificationUtils(private var activity: Activity) {
 

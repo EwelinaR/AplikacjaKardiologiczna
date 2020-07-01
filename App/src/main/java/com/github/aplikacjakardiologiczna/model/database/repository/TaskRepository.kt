@@ -1,8 +1,9 @@
 package com.github.aplikacjakardiologiczna.model.database.repository
 
+import android.util.Log
+import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dao.TaskDao
 import com.github.aplikacjakardiologiczna.model.database.entity.Task
-import com.github.aplikacjakardiologiczna.model.database.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +18,7 @@ class TaskRepository private constructor(
         return@withContext try {
             Result.Success(taskDao.getAll())
         } catch (e: Exception) {
+            Log.e("error", "getAllTasks() failed", e)
             Result.Error(e)
         }
     }
@@ -25,6 +27,7 @@ class TaskRepository private constructor(
         return@withContext try {
             Result.Success(taskDao.countAllTasks())
         } catch (e: Exception) {
+            Log.e("error", "getTaskCount() failed", e)
             Result.Error(e)
         }
     }

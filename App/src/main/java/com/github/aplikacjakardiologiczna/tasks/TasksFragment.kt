@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskDetailsRepository
-import kotlinx.android.synthetic.main.fragment_tasks.*
+import kotlinx.android.synthetic.main.fragment_tasks.recycler_view_tasks
 
 
 class TasksFragment : Fragment(), TasksContract.View {

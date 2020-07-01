@@ -2,8 +2,11 @@ package com.github.aplikacjakardiologiczna.model.database.entity
 
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
-import androidx.room.*
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity
 data class UserTask(

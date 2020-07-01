@@ -1,25 +1,26 @@
 package com.github.aplikacjakardiologiczna.utils
 
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 object DateUtils {
     fun atEndOfDay(date: Date): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar[Calendar.HOUR_OF_DAY] = 23
-        calendar[Calendar.MINUTE] = 59
-        calendar[Calendar.SECOND] = 59
-        calendar[Calendar.MILLISECOND] = 999
-        return calendar.time
+        return Calendar.getInstance().apply {
+            time = date
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.time
     }
 
     fun atStartOfDay(date: Date): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar[Calendar.HOUR_OF_DAY] = 0
-        calendar[Calendar.MINUTE] = 0
-        calendar[Calendar.SECOND] = 0
-        calendar[Calendar.MILLISECOND] = 0
-        return calendar.time
+        return Calendar.getInstance().apply {
+            time = date
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
     }
 }
