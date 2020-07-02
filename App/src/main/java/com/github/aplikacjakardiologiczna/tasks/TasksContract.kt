@@ -10,8 +10,8 @@ interface TasksContract {
 
     interface TaskItemView {
         fun setImage(resource: Int)
-        fun setTextOnFirstLine(text: String)
-        fun setTextOnSecondLine(text: String)
+        fun setTaskName(text: String)
+        fun setTaskDescription(text: String)
     }
 
     interface Presenter : BasePresenter {

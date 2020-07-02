@@ -29,8 +29,8 @@ class TasksPresenter(view: TasksContract.View,
     override fun onBindTasksAtPosition(position: Int, itemView: TasksContract.TaskItemView) {
         val task = tasksForToday[position]
         itemView.setImage(task.details.category.categoryIcon)
-        itemView.setTextOnFirstLine(task.details.name)
-        itemView.setTextOnSecondLine(task.details.description)
+        itemView.setTaskName(task.details.name)
+        itemView.setTaskDescription(task.details.description)
     }
 
     override fun onDestroy() {
