@@ -1,6 +1,10 @@
 package com.github.aplikacjakardiologiczna.notification
 
-import android.app.*
+import android.app.IntentService
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -27,15 +31,15 @@ class NotificationService : IntentService("NotificationService") {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
             )
             channel.enableLights(true)
             channel.lightColor = Color.RED
             channel.enableVibration(true)
             channel.description =
-                CHANNEL_DESCRIPTION
+                    CHANNEL_DESCRIPTION
             notificationManager.createNotificationChannel(channel)
         }
     }
@@ -49,12 +53,12 @@ class NotificationService : IntentService("NotificationService") {
         }
     }
 
-    private fun buildNotification(){
+    private fun buildNotification() {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        val  taskId = "task_id"
+        val taskId = "task_id"
 
         // TODO connect with DB and get not completed task
         val activityId = 33
@@ -63,18 +67,18 @@ class NotificationService : IntentService("NotificationService") {
         val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
             putExtra(taskId, activityId.toString())
         }
-        val buttonPendingIntent = PendingIntent.getBroadcast(this,0,buttonIntent,0)
+        val buttonPendingIntent = PendingIntent.getBroadcast(this, 0, buttonIntent, 0)
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID
-            ).apply {
-                setSmallIcon(R.drawable.notify_heart)
-                setContentIntent(pendingIntent)
-                setContentTitle(getString(R.string.task_notify_title))
-                setContentText(activityDescription)
-                setAutoCancel(true)
-                setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                addAction(R.drawable.notify_heart, getString(R.string.notify_button),
-                        buttonPendingIntent)
+        ).apply {
+            setSmallIcon(R.drawable.notify_heart)
+            setContentIntent(pendingIntent)
+            setContentTitle(getString(R.string.task_notify_title))
+            setContentText(activityDescription)
+            setAutoCancel(true)
+            priority = NotificationCompat.PRIORITY_DEFAULT
+            addAction(R.drawable.notify_heart, getString(R.string.notify_button),
+                    buttonPendingIntent)
         }
         notification = builder.build()
         startForeground(1, notification)

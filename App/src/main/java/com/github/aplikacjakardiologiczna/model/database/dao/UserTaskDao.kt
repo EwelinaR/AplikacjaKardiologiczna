@@ -1,6 +1,10 @@
 package com.github.aplikacjakardiologiczna.model.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 
 @Dao

@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import com.github.aplikacjakardiologiczna.model.database.converter.Converter
 import com.github.aplikacjakardiologiczna.model.database.dao.TaskDao
 import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDao
+import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDetailsDao
 import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 
@@ -18,6 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
     abstract fun userTaskDao(): UserTaskDao
+    abstract fun userTaskDetailsDao(): UserTaskDetailsDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null
