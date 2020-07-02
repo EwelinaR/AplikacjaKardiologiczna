@@ -23,6 +23,15 @@ class TaskRepository private constructor(
         }
     }
 
+    suspend fun getAllIds(): Result<List<Int>> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(taskDao.getAllIds())
+        } catch (e: Exception) {
+            Log.e("error", "getAllIds() failed", e)
+            Result.Error(e)
+        }
+    }
+
     suspend fun getTaskCount(): Result<Int> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(taskDao.countAllTasks())

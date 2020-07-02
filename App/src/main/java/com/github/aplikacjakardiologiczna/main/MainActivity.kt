@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import com.github.aplikacjakardiologiczna.tasks.TasksFragment
@@ -27,7 +28,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         val db = AppDatabase.getInstance(this)
 
-        setPresenter(MainPresenter(this, UserTaskRepository.getInstance(db.userTaskDao())))
+        setPresenter(MainPresenter(this, UserTaskRepository.getInstance(db.userTaskDao()),
+            TaskRepository.getInstance(db.taskDao())))
+
         presenter.onViewCreated()
 
         val notify = NotificationUtils(this)

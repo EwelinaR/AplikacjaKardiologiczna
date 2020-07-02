@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
+import java.util.Date
 
 @Dao
 interface UserTaskDao {
@@ -16,10 +17,13 @@ interface UserTaskDao {
     fun loadAllByIds(taskIds: IntArray): List<UserTask>
 
     @Query("SELECT * FROM userTask WHERE startDate IN (:date)")
-    fun findByDate(date: Long): List<UserTask>
+    fun findByDate(date: Date): List<UserTask>
 
     @Query("SELECT taskId FROM userTask WHERE completionDateTime IS NOT NULL")
     fun findCompletedTaskIds(): List<Int>
+
+    @Query("SELECT count(taskId) FROM userTask WHERE startDate IN (:date)")
+    fun countTasks(date: Date): Int
 
     @Update
     fun update(task: UserTask)
