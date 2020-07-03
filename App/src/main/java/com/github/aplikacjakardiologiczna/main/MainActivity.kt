@@ -8,9 +8,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
-import com.github.aplikacjakardiologiczna.model.database.AppDatabase
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
-import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
+import com.github.aplikacjakardiologiczna.model.database.TaskInserter
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import com.github.aplikacjakardiologiczna.tasks.TasksFragment
 import kotlinx.android.synthetic.main.activity_main.bottom_navigation
@@ -26,10 +24,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val db = AppDatabase.getInstance(this)
+        TaskInserter.insertUserTasksForToday(this)
 
-        setPresenter(MainPresenter(this, UserTaskRepository.getInstance(db.userTaskDao()),
-            TaskRepository.getInstance(db.taskDao())))
+        setPresenter(MainPresenter(this))
 
         presenter.onViewCreated()
 

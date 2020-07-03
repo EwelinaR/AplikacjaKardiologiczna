@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
+import com.github.aplikacjakardiologiczna.model.database.TaskInserter
 
 class NotificationService : IntentService("NotificationService") {
 
@@ -59,6 +60,8 @@ class NotificationService : IntentService("NotificationService") {
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val taskId = "task_id"
+
+        TaskInserter.insertUserTasksForTomorrow(this)
 
         // TODO connect with DB and get not completed task
         val activityId = 33
