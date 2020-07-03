@@ -36,6 +36,8 @@ class TasksAdapter(private val presenter: TasksContract.Presenter) : RecyclerVie
                     fun(_: CompoundButton, isChecked: Boolean) {
                         crossOffTask(isChecked)
                         presenter.onTaskChecked(adapterPosition, isChecked, this)
+
+                        taskView.checkbox_item_task.isEnabled = false
                     }
             ))
         }
@@ -64,6 +66,7 @@ class TasksAdapter(private val presenter: TasksContract.Presenter) : RecyclerVie
 
         override fun checkTask(shouldBeChecked: Boolean) {
             taskView.checkbox_item_task.isChecked = shouldBeChecked
+            taskView.checkbox_item_task.isEnabled = !shouldBeChecked
         }
 
         private fun crossOffLine(textView: TextView) {
