@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskDetailsRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.android.synthetic.main.fragment_tasks.recycler_view_tasks
 
 
@@ -23,8 +24,8 @@ class TasksFragment : Fragment(), TasksContract.View {
         val db = AppDatabase.getInstance(requireContext())
 
         setPresenter(TasksPresenter(this,
-                UserTaskDetailsRepository.getInstance(db.userTaskDetailsDao())))
-
+                UserTaskDetailsRepository.getInstance(db.userTaskDetailsDao()),
+                UserTaskRepository.getInstance(db.userTaskDao())))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +44,10 @@ class TasksFragment : Fragment(), TasksContract.View {
 
     override fun onTasksLoaded() {
         recycler_view_tasks.adapter?.notifyDataSetChanged()
+    }
+
+    override fun onTaskMoved(from: Int, to: Int) {
+        recycler_view_tasks.adapter?.notifyItemMoved(from, to)
     }
 
     override fun setPresenter(presenter: TasksContract.Presenter) {

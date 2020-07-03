@@ -17,7 +17,7 @@ data class UserTask(
                 onDelete = ForeignKey.NO_ACTION)
         @NonNull @ColumnInfo(name = "taskId") val taskId: Int,
         @NonNull @ColumnInfo(name = "startDate") val startDate: Date,
-        @Nullable @ColumnInfo(name = "completionDateTime") val completionDateTime: Date? = null
+        @Nullable @ColumnInfo(name = "completionDateTime") var completionDateTime: Date? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

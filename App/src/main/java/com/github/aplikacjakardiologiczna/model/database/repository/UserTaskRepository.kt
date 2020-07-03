@@ -23,6 +23,15 @@ class UserTaskRepository private constructor(
         }
     }
 
+    suspend fun updateUserTask(userTask: UserTask): Result<Unit> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(userTaskDao.update(userTask))
+        } catch (e: Exception) {
+            Log.e("error", "updateUserTasks() failed", e)
+            Result.Error(e)
+        }
+    }
+
     companion object {
         private var INSTANCE: UserTaskRepository? = null
 

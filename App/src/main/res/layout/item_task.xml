@@ -12,7 +12,7 @@
         android:padding="8dp">
 
         <CheckBox
-            android:id="@+id/checkbox_task_item"
+            android:id="@+id/checkbox_item_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -29,7 +29,7 @@
             android:layout_width="50dp"
             android:layout_height="45dp"
             android:layout_marginEnd="8dp"
-            android:layout_toEndOf="@id/checkbox_task_item"
+            android:layout_toEndOf="@id/checkbox_item_task"
             tools:src="@drawable/ic_run" />
 
         <TextView
