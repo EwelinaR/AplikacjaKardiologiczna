@@ -1,13 +1,14 @@
 package com.github.aplikacjakardiologiczna.model.database.repository
 
 import android.util.Log
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.atStartOfDay
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDao
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
-import com.github.aplikacjakardiologiczna.utils.DateUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import java.util.Date
 
 
@@ -26,7 +27,7 @@ class UserTaskRepository private constructor(
     }
 
     suspend fun getUserTasks(date: Date): Result<List<UserTask>> = withContext(ioDispatcher) {
-        val dateStart = DateUtils.atStartOfDay(date)
+        val dateStart = Calendar.getInstance().atStartOfDay(date)
 
         return@withContext try {
             Result.Success(userTaskDao.findByDate(dateStart))
@@ -37,7 +38,7 @@ class UserTaskRepository private constructor(
     }
 
     suspend fun countUserTasks(date: Date): Result<Int> = withContext(ioDispatcher) {
-        val dateStart = DateUtils.atStartOfDay(date)
+        val dateStart = Calendar.getInstance().atStartOfDay(date)
 
         return@withContext try {
             Result.Success(userTaskDao.countTasks(dateStart))

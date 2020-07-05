@@ -1,10 +1,10 @@
 package com.github.aplikacjakardiologiczna.model.database
 
 import android.content.Context
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.atStartOfDay
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
-import com.github.aplikacjakardiologiczna.utils.DateUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,7 +25,7 @@ object TaskInserter: CoroutineScope {
 
     fun insertUserTasksForToday(context: Context): Job = launch {
         val todayDate: Calendar = Calendar.getInstance()
-        val todayDateStart = DateUtils.atStartOfDay(todayDate.time)
+        val todayDateStart = Calendar.getInstance().atStartOfDay(todayDate.time)
 
         insertUserTasks(context, todayDateStart)
     }
@@ -33,7 +33,7 @@ object TaskInserter: CoroutineScope {
     fun insertUserTasksForTomorrow(context: Context): Job = launch {
         val tomorrowDate: Calendar = Calendar.getInstance()
         tomorrowDate.add(Calendar.DAY_OF_MONTH, 1)
-        val tomorrowDateStart = DateUtils.atStartOfDay(tomorrowDate.time)
+        val tomorrowDateStart = Calendar.getInstance().atStartOfDay(tomorrowDate.time)
 
         insertUserTasks(context, tomorrowDateStart)
     }
