@@ -1,7 +1,7 @@
 package com.github.aplikacjakardiologiczna.model.database
 
 import com.github.aplikacjakardiologiczna.AppConstants
-import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.atStartOfDay
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.today
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.tomorrow
 import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
@@ -37,11 +37,9 @@ class UserTaskInitializer(
         val randomTasks = tasks.shuffled().subList(0, numberOfTasks)
 
         val calendar = Calendar.getInstance()
+        val startDate = if (forToday) calendar.today else calendar.tomorrow
 
-        val date = if (forToday) calendar.time else calendar.tomorrow
-        val dateStart = calendar.atStartOfDay(date)
-
-        val userTasks = randomTasks.map {UserTask(it.id, dateStart)}
+        val userTasks = randomTasks.map {UserTask(it.id, startDate)}
 
         insertUserTasks(userTasks)
     }

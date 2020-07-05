@@ -22,9 +22,6 @@ interface UserTaskDao {
     @Query("SELECT taskId FROM userTask WHERE completionDateTime IS NOT NULL")
     fun findCompletedTaskIds(): List<Int>
 
-    @Query("SELECT count(taskId) FROM userTask WHERE startDate IN (:date)")
-    fun countTasks(date: Date): Int
-
     @Update
     fun update(task: UserTask)
 
