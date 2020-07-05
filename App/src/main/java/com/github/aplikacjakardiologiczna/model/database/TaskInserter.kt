@@ -14,7 +14,7 @@ import java.util.Date
 import java.util.Random
 import kotlin.coroutines.CoroutineContext
 
-
+//TODO To be deleted or modified
 object TaskInserter: CoroutineScope {
 
     private const val numberOfTasksPerDay = 4
@@ -22,13 +22,6 @@ object TaskInserter: CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
-
-    fun insertUserTasksForToday(context: Context): Job = launch {
-        val todayDate: Calendar = Calendar.getInstance()
-        val todayDateStart = Calendar.getInstance().atStartOfDay(todayDate.time)
-
-        insertUserTasks(context, todayDateStart)
-    }
 
     fun insertUserTasksForTomorrow(context: Context): Job = launch {
         val tomorrowDate: Calendar = Calendar.getInstance()
