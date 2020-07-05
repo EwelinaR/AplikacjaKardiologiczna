@@ -6,9 +6,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import com.github.aplikacjakardiologiczna.tasks.TasksFragment
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private lateinit var presenter: MainContract.Presenter
     private lateinit var toggle: ActionBarDrawerToggle
+    private val heartFragment = HeartFragment()
+    private val tasksFragment = TasksFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,14 +31,20 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         val db = AppDatabase.getInstance(this)
 
-        setPresenter(MainPresenter(this, UserTaskRepository.getInstance(db.userTaskDao())))
+        setPresenter(
+            MainPresenter(
+                this,
+                AppSettings(this),
+                TaskRepository.getInstance(db.taskDao()),
+                UserTaskRepository.getInstance(db.userTaskDao())
+            )
+        )
         presenter.onViewCreated()
 
         val notify = NotificationUtils(this)
-
-        if(!notify.isAlarmUp())
+        if (!notify.isAlarmUp())
             notify.setAlarm()
-      
+
         setupBottomNavigation()
         setupDrawerNavigation()
     }
@@ -52,13 +62,11 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     override fun showHeartView() {
-        val fragment = HeartFragment()
-        showFragment(fragment)
+        showFragment(heartFragment)
     }
 
     override fun showTasksView() {
-        val fragment = TasksFragment()
-        showFragment(fragment)
+        showFragment(tasksFragment)
     }
 
     override fun setPresenter(presenter: MainContract.Presenter) {
@@ -66,8 +74,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment, fragment.javaClass.simpleName)
-                .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment, fragment.javaClass.simpleName)
+            .commit()
     }
 
     private fun setupBottomNavigation() {
@@ -88,7 +97,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private fun setupDrawerNavigation() {
         toggle = ActionBarDrawerToggle(
-                this, drawer_layout, 0, 0
+            this, drawer_layout, 0, 0
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()

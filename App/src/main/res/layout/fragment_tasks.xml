@@ -12,6 +12,6 @@
         android:background="@color/tasksBackground"
         android:clipToPadding="false"
         android:padding="4dp"
-        tools:listitem="@layout/task_item" />
+        tools:listitem="@layout/item_task" />
 
 </FrameLayout>

@@ -9,6 +9,6 @@ import java.util.Date
 @Dao
 interface UserTaskDetailsDao {
     @Transaction
-    @Query("SELECT * FROM Task INNER JOIN UserTask ON Task.id = UserTask.taskId WHERE UserTask.startDate BETWEEN :start AND :end")
-    fun getAllInDate(start: Date, end: Date): List<UserTaskDetails>
+    @Query("SELECT * FROM UserTask INNER JOIN Task ON UserTask.taskId = Task.id WHERE UserTask.startDate IN (:startDate)")
+    fun getByStartDate(startDate: Date): List<UserTaskDetails>
 }

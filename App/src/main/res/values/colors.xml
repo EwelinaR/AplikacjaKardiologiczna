@@ -10,5 +10,6 @@
     <color name="tasksBackground">#E1DAD7</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="lightGray">#C8C8C8</color>
     <color name="lilac">#C6A9FA</color>
 </resources>
