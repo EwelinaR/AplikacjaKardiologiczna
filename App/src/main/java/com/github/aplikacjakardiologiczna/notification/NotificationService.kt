@@ -14,7 +14,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
-import com.github.aplikacjakardiologiczna.model.database.TaskInserter
+import com.github.aplikacjakardiologiczna.model.database.AppDatabase
+import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 
 class NotificationService : IntentService("NotificationService") {
 
@@ -46,6 +49,25 @@ class NotificationService : IntentService("NotificationService") {
     }
 
     override fun onHandleIntent(intent: Intent?) {
+        initializeUserTasksForTomorrow()
+        showNotification()
+    }
+
+    private fun initializeUserTasksForTomorrow() {
+        val db = AppDatabase.getInstance(this)
+        val taskInitializer = UserTaskInitializer(
+            TaskRepository.getInstance(db.taskDao()),
+            UserTaskRepository.getInstance(db.userTaskDao()),
+            ::initializeTasksCallback
+        )
+        taskInitializer.initializeUserTasks(false)
+    }
+
+    private fun initializeTasksCallback(wasSuccessful: Boolean) {
+        // TODO Do sth
+    }
+
+    private fun showNotification() {
         Log.i("NOTIFICATION", "Showing new notification")
         createChannel()
         buildNotification()
@@ -60,8 +82,6 @@ class NotificationService : IntentService("NotificationService") {
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val taskId = "task_id"
-
-        TaskInserter.insertUserTasksForTomorrow(this)
 
         // TODO connect with DB and get not completed task
         val activityId = 33
@@ -81,7 +101,7 @@ class NotificationService : IntentService("NotificationService") {
             setAutoCancel(true)
             priority = NotificationCompat.PRIORITY_DEFAULT
             addAction(R.drawable.notify_heart, getString(R.string.notify_button),
-                    buttonPendingIntent)
+                buttonPendingIntent)
         }
         notification = builder.build()
         startForeground(1, notification)

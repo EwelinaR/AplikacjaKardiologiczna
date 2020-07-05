@@ -23,4 +23,7 @@ object CalendarExtensions {
             set(Calendar.SECOND, 59)
             set(Calendar.MILLISECOND, 999)
         }.time
+
+    val Calendar.tomorrow: Date
+        get() = time.apply { add(Calendar.DAY_OF_MONTH, 1) }
 }

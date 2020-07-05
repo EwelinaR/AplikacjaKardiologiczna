@@ -1,18 +1,12 @@
 package com.github.aplikacjakardiologiczna.main
 
-import com.github.aplikacjakardiologiczna.AppConstants.TASKS_PER_DAY
 import com.github.aplikacjakardiologiczna.AppSettings
-import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.atStartOfDay
-import com.github.aplikacjakardiologiczna.model.database.Result
-import com.github.aplikacjakardiologiczna.model.database.entity.Task
-import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
+import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
 class MainPresenter(
@@ -49,37 +43,20 @@ class MainPresenter(
         this.view = null
     }
 
-    private fun initializeFirstUserTasks(): Job = launch {
-        when (val result = taskRepository.getAllTasks()) {
-            is Result.Success<List<Task>> -> onTasksLoaded(result.data)
-            is Result.Error -> {
-                //TODO Show a snackbar/toast saying that something went wrong
-            }
-        }
+    private fun initializeFirstUserTasks() {
+        val taskInitializer = UserTaskInitializer(
+            taskRepository,
+            userTaskRepository,
+            ::initializeFirstUserTasksCallback
+        )
+        taskInitializer.initializeUserTasks(false)
     }
 
-    private fun onTasksLoaded(tasks: List<Task>) {
-        val numberOfTasks = if (tasks.size < TASKS_PER_DAY) tasks.size else TASKS_PER_DAY
-        val randomTasks = tasks.shuffled().subList(0, numberOfTasks)
-
-        val todaysDate = Calendar.getInstance().time
-        val todaysDateStart = Calendar.getInstance().atStartOfDay(todaysDate)
-
-        val userTasks = Array(TASKS_PER_DAY) { i ->
-            UserTask(
-                taskId = randomTasks[i].id,
-                startDate = todaysDateStart
-            )
-        }.toList()
-
-        insertUserTasks(userTasks)
-    }
-
-    private fun insertUserTasks(userTasks: List<UserTask>): Job = launch {
-        when (userTaskRepository.insertUserTasks(userTasks)) {
-            is Result.Success<Unit> -> settings.firstRun = false
-            is Result.Error -> {
-                //TODO Show a snackbar/toast saying that something went wrong
+    private fun initializeFirstUserTasksCallback(wasSuccessful: Boolean) {
+        when (wasSuccessful) {
+            true -> settings.firstRun = false
+            false -> {
+                // TODO Do sth
             }
         }
     }
