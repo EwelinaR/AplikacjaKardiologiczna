@@ -6,8 +6,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
+import com.github.aplikacjakardiologiczna.model.database.AppDatabase
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import com.github.aplikacjakardiologiczna.tasks.TasksFragment
 import kotlinx.android.synthetic.main.activity_main.bottom_navigation
@@ -25,14 +29,22 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setPresenter(MainPresenter(this))
+        val db = AppDatabase.getInstance(this)
+
+        setPresenter(
+            MainPresenter(
+                this,
+                AppSettings(this),
+                TaskRepository.getInstance(db.taskDao()),
+                UserTaskRepository.getInstance(db.userTaskDao())
+            )
+        )
         presenter.onViewCreated()
 
         val notify = NotificationUtils(this)
-
-        if(!notify.isAlarmUp())
+        if (!notify.isAlarmUp())
             notify.setAlarm()
-      
+
         setupBottomNavigation()
         setupDrawerNavigation()
     }
@@ -62,8 +74,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment, fragment.javaClass.simpleName)
-                .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment, fragment.javaClass.simpleName)
+            .commit()
     }
 
     private fun setupBottomNavigation() {
@@ -84,7 +97,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private fun setupDrawerNavigation() {
         toggle = ActionBarDrawerToggle(
-                this, drawer_layout, 0, 0
+            this, drawer_layout, 0, 0
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()

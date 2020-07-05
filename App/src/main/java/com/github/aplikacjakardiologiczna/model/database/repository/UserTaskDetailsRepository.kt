@@ -1,10 +1,10 @@
 package com.github.aplikacjakardiologiczna.model.database.repository
 
 import android.util.Log
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.today
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDetailsDao
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTaskDetails
-import com.github.aplikacjakardiologiczna.utils.DateUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,13 +16,10 @@ class UserTaskDetailsRepository private constructor(
 ) {
 
     suspend fun getTasksForToday(): Result<List<UserTaskDetails>> = withContext(ioDispatcher) {
-        val todaysDate: Calendar = Calendar.getInstance()
-
-        val todaysDateStart = DateUtils.atStartOfDay(todaysDate.time)
-        val todaysDateEnd = DateUtils.atEndOfDay(todaysDate.time)
+        val todaysDate = Calendar.getInstance().today
 
         return@withContext try {
-            Result.Success(userTaskDetailsDao.getAllInDate(todaysDateStart, todaysDateEnd))
+            Result.Success(userTaskDetailsDao.getByStartDate(todaysDate))
         } catch (e: Exception) {
             Log.e("error", "getTasksForToday() failed", e)
             Result.Error(e)
