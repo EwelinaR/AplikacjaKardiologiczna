@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private lateinit var presenter: MainContract.Presenter
     private lateinit var toggle: ActionBarDrawerToggle
+    private val heartFragment = HeartFragment()
+    private val tasksFragment = TasksFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +54,11 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     override fun showHeartView() {
-        val fragment = HeartFragment()
-        showFragment(fragment)
+        showFragment(heartFragment)
     }
 
     override fun showTasksView() {
-        val fragment = TasksFragment()
-        showFragment(fragment)
+        showFragment(tasksFragment)
     }
 
     override fun setPresenter(presenter: MainContract.Presenter) {
