@@ -49,7 +49,7 @@ class MainPresenter(
             userTaskRepository,
             ::initializeFirstUserTasksCallback
         )
-        taskInitializer.initializeUserTasks(false)
+        taskInitializer.initializeUserTasks(true)
     }
 
     private fun initializeFirstUserTasksCallback(wasSuccessful: Boolean) {
