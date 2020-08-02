@@ -7,7 +7,10 @@ import java.util.Date
 object CalendarExtensions {
 
     val Calendar.tomorrow: Date
-        get() = atStartOfDay(time.apply { add(Calendar.DAY_OF_MONTH, 1) })
+        get() {
+            add(Calendar.DAY_OF_YEAR, 1)
+            return atStartOfDay(time)
+        }
 
     val Calendar.today: Date
         get() = atStartOfDay(time)
