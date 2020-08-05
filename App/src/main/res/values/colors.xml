@@ -3,10 +3,10 @@
     <color name="colorPrimary">#b71c1c</color>
     <color name="colorPrimaryDark">#7f0000</color>
     <color name="colorPrimaryLight">#f05545</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#f4ab38</color>
 
     <color name="checkboxColor">#200619</color>
-    <color name="taskColor">#F3C22D</color>
+    <color name="taskColor">#f4ab38</color>
     <color name="background">#E1DAD7</color>
 
     <color name="white">#FFFFFF</color>
