@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".setup.SetUpActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutSetUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <TextView
+            android:id="@+id/textViewSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/enter_username_and_group"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/white"
+            android:hint="@string/username"
+            android:inputType="text"
+            android:paddingStart="8dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="@dimen/edit_text_text_size"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerGroup"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:backgroundTint="@color/white"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/white"
+            tools:listitem="@layout/item_spinner" />
+
+        <Button
+            android:id="@+id/buttonConfirm"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_style"
+            android:text="@string/confirm"
+            android:textColor="@color/white"
+            android:textSize="@dimen/button_text_size" />
+
+    </LinearLayout>
+
+</RelativeLayout>

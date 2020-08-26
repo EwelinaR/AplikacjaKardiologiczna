@@ -10,4 +10,8 @@
     <string name="category_food">healthy eating</string>
     <string name="category_medicine">taking medicines</string>
     <string name="category_pressure">pressure measurement</string>
+    <string name="enter_username_and_group">Enter the username and group that the doctor gave you</string>
+    <string name="confirm">Confirm</string>
+    <string name="username">Username</string>
+    <string name="empty_username_validation_message">Username field cannot be empty.</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.main.MainActivity
+import com.github.aplikacjakardiologiczna.setup.SetUpActivity
 
 class LauncherActivity : AppCompatActivity(), LauncherContract.View {
     private lateinit var presenter: LauncherContract.Presenter
@@ -24,7 +25,7 @@ class LauncherActivity : AppCompatActivity(), LauncherContract.View {
     }
 
     override fun showSetUp() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, SetUpActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
         finish()
@@ -32,5 +33,10 @@ class LauncherActivity : AppCompatActivity(), LauncherContract.View {
 
     override fun setPresenter(presenter: LauncherContract.Presenter) {
         this.presenter = presenter
+    }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
     }
 }
