@@ -31,6 +31,16 @@ android {
         }
     }
 
+//    packagingOptions {
+//        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/LICENSE'
+//        exclude 'META-INF/LICENSE.txt'
+//        exclude 'META-INF/license.txt'
+//        exclude 'META-INF/NOTICE'
+//        exclude 'META-INF/NOTICE.txt'
+//        exclude 'META-INF/notice.txt'
+//        exclude 'META-INF/ASL2.0'
+//    }
 }
 
 dependencies {
@@ -53,4 +63,9 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.amazonaws:aws-android-sdk-ddb:2.18.0'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-document:2.18.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.11.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.11.0'
 }
