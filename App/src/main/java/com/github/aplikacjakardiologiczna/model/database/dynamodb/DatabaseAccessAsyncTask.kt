@@ -1,4 +1,4 @@
-package com.github.aplikacjakardiologiczna.model.database.aws
+package com.github.aplikacjakardiologiczna.model.database.dynamodb
 
 import android.app.Activity
 import android.os.AsyncTask
@@ -8,6 +8,9 @@ import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document
 import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Primitive
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest
+import com.amazonaws.services.dynamodbv2.model.UpdateTableRequest
 
 
 /**
