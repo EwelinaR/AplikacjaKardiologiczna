@@ -6,7 +6,7 @@ import com.github.aplikacjakardiologiczna.BaseView
 interface LauncherContract {
     interface View : BaseView<Presenter> {
         fun showMain()
-        fun showSetUp()
+        fun showLogin()
     }
 
     interface Presenter : BasePresenter {

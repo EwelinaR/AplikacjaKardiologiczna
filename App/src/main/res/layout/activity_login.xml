@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".setup.SetUpActivity">
+    tools:context=".login.LoginActivity">
 
     <LinearLayout
         android:id="@+id/linearLayoutSetUp"
@@ -17,7 +17,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="60dp"
             android:src="@mipmap/ic_launcher_round" />
 
         <TextView
@@ -25,9 +25,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/enter_username_and_group"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/enter_username"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp" />
@@ -37,28 +37,17 @@
             android:layout_width="@dimen/spinner_width"
             android:layout_height="@dimen/spinner_height"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="50dp"
             android:backgroundTint="@color/white"
             android:hint="@string/username"
             android:inputType="text"
             android:paddingStart="8dp"
+            android:paddingEnd="0dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="@dimen/edit_text_text_size"
             android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="8dp"/>
-
-        <Spinner
-            android:id="@+id/spinnerGroup"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
-            android:layout_width="@dimen/spinner_width"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="50dp"
-            android:backgroundTint="@color/white"
-            android:spinnerMode="dropdown"
-            android:textColor="@color/white"
-            tools:listitem="@layout/item_spinner" />
+            android:drawablePadding="8dp" />
 
         <Button
             android:id="@+id/buttonConfirm"

@@ -1,54 +1,39 @@
-package com.github.aplikacjakardiologiczna.setup
+package com.github.aplikacjakardiologiczna.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.ErrorMessage
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
-import com.github.aplikacjakardiologiczna.model.database.repository.GroupRepository
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_set_up.buttonConfirm
-import kotlinx.android.synthetic.main.activity_set_up.editTextUsername
-import kotlinx.android.synthetic.main.activity_set_up.linearLayoutSetUp
-import kotlinx.android.synthetic.main.activity_set_up.spinnerGroup
+import kotlinx.android.synthetic.main.activity_login.buttonConfirm
+import kotlinx.android.synthetic.main.activity_login.editTextUsername
+import kotlinx.android.synthetic.main.activity_login.linearLayoutSetUp
 
 
-class SetUpActivity : AppCompatActivity(), SetUpContract.View {
+class LoginActivity : AppCompatActivity(), LoginContract.View {
 
-    private lateinit var presenter: SetUpContract.Presenter
+    private lateinit var presenter: LoginContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_set_up)
+        setContentView(R.layout.activity_login)
 
         val db = AppDatabase.getInstance(this)
 
         buttonConfirm.setOnClickListener {
-            presenter.onConfirmButtonPressed(
-                editTextUsername.text.toString(),
-                spinnerGroup.selectedItemPosition
-            )
+            presenter.onConfirmButtonPressed(editTextUsername.text.toString())
         }
 
         setPresenter(
-            SetUpPresenter(
+            LoginPresenter(
                 this,
-                AppSettings(this),
-                GroupRepository.getInstance(db.groupDao())
+                AppSettings(this)
             )
         )
-
-        presenter.onViewCreated()
-    }
-
-    override fun onGroupsLoaded(groups: List<String>) {
-        val adapter = ArrayAdapter(this, R.layout.item_spinner, groups)
-        adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
-        spinnerGroup.adapter = adapter
     }
 
     override fun showMain() {
@@ -64,7 +49,7 @@ class SetUpActivity : AppCompatActivity(), SetUpContract.View {
             .show()
     }
 
-    override fun setPresenter(presenter: SetUpContract.Presenter) {
+    override fun setPresenter(presenter: LoginContract.Presenter) {
         this.presenter = presenter
     }
 

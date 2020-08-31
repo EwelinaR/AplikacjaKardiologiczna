@@ -11,7 +11,7 @@ class LauncherPresenter(
 
     override fun redirect() {
         if (isAppNotSetUp()) {
-            view?.showSetUp()
+            view?.showLogin()
         } else {
             view?.showMain()
         }
@@ -22,6 +22,6 @@ class LauncherPresenter(
     }
 
     private fun isAppNotSetUp(): Boolean =
-        settings.firstRun || settings.username == null || settings.groupId < 0
+        settings.firstRun || settings.username == null
 
 }
