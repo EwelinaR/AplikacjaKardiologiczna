@@ -4,13 +4,16 @@ import android.app.Activity
 import android.os.AsyncTask
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
-import com.amazonaws.services.dynamodbv2.model.AttributeAction
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
 
 
-class UpdatePatientTableAsyncTask constructor(private val activity: Activity):
+class UpdatePatientProgressAsync constructor(
+    private val activity: Activity,
+    private val nick: String,
+    private val date: String,
+    private val time: String,
+    private val taskId: Int):
     AsyncTask<Void?, Void?, Void?>() {
 
     override fun doInBackground(vararg params: Void?): Void? {
@@ -23,21 +26,23 @@ class UpdatePatientTableAsyncTask constructor(private val activity: Activity):
         client.setRegion(DynamoDBHelper.REGION)
 
         val itemKey = HashMap<String, AttributeValue>()
-        itemKey["nick"] = AttributeValue().withS("ER1234")
+        itemKey["nick"] = AttributeValue().withS(nick)
 
-        val updatedValues = HashMap<String, AttributeValueUpdate>()
-        // Update the column specified by name with updatedVal
-        updatedValues["group"] = AttributeValueUpdate()
-            .withValue(AttributeValue().withS("A"))
-            .withAction(AttributeAction.PUT)
+        val attributeNames: MutableMap<String, String> = HashMap()
+        attributeNames["#date"] = date
+        attributeNames["#task_id"] = taskId.toString()
+
+        val attributeValues: MutableMap<String, AttributeValue> = HashMap()
+        attributeValues[":time_val"] = AttributeValue().withS(time)
 
         val request = UpdateItemRequest()
             .withTableName(DynamoDBHelper.TABLE_NAME)
             .withKey(itemKey)
-            .withAttributeUpdates(updatedValues)
+            .withUpdateExpression("SET tasks.#date.#task_id = :time_val")
+            .withExpressionAttributeValues(attributeValues)
+            .withExpressionAttributeNames(attributeNames)
 
         client.updateItem(request)
-
         return null
     }
 }

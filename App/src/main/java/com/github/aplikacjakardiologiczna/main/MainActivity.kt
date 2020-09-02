@@ -10,8 +10,7 @@ import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
-import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseAccessAsyncTask
-import com.github.aplikacjakardiologiczna.model.database.dynamodb.UpdatePatientTableAsyncTask
+import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
@@ -50,10 +49,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         setupBottomNavigation()
         setupDrawerNavigation()
 
-        // Test of accessing DynamoDB
-        val task = UpdatePatientTableAsyncTask(this)
-       // val task = DatabaseAccessAsyncTask(this)
-        task.execute()
+        val database = DatabaseManager(this)
+        database.markTaskAsDone(209)
     }
 
     override fun onDestroy() {
