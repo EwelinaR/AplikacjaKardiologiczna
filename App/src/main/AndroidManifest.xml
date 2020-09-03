@@ -11,20 +11,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.MainActivity">
+        <activity
+            android:name=".launcher.LauncherActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".main.MainActivity" />
 
-        <receiver android:name=".notification.AlarmNotificationReceiver" android:enabled="true" >
+        <receiver
+            android:name=".notification.AlarmNotificationReceiver"
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".notification.CheckTaskNotificationReceiver"/>
+        <receiver android:name=".notification.CheckTaskNotificationReceiver" />
 
         <service
             android:name=".notification.NotificationService"
