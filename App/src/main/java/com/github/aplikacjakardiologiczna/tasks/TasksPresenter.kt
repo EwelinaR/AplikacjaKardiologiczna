@@ -80,6 +80,7 @@ class TasksPresenter(view: TasksContract.View,
 
     private fun onTasksForTodayLoaded(tasks: List<UserTaskDetails>) {
         tasksForToday = ArrayList(tasks)
+        tasksForToday.sortBy { it.userTask?.completionDateTime }
         view?.onTasksLoaded()
     }
 
