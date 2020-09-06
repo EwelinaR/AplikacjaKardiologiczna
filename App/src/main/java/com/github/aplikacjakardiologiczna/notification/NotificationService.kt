@@ -16,6 +16,7 @@ import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.database.AppDatabase
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
+import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 
@@ -55,9 +56,11 @@ class NotificationService : IntentService("NotificationService") {
 
     private fun initializeUserTasksForTomorrow() {
         val db = AppDatabase.getInstance(this)
+        val dynamoDb = DatabaseManager(this)
+
         val taskInitializer = UserTaskInitializer(
             TaskRepository.getInstance(db.taskDao()),
-            UserTaskRepository.getInstance(db.userTaskDao()),
+            UserTaskRepository.getInstance(db.userTaskDao(), dynamoDb),
             ::initializeTasksCallback
         )
         taskInitializer.initializeUserTasks(false)

@@ -3,6 +3,8 @@ package com.github.aplikacjakardiologiczna.model.database.repository
 import android.util.Log
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dao.UserTaskDao
+import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
+import com.github.aplikacjakardiologiczna.model.database.dynamodb.UserInfo
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -11,8 +13,18 @@ import kotlinx.coroutines.withContext
 
 class UserTaskRepository private constructor(
         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-        private val userTaskDao: UserTaskDao
+        private val userTaskDao: UserTaskDao,
+        private val databaseManager: DatabaseManager
 ) {
+
+    suspend fun getTaskIdsForToday(): Result<UserInfo> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(databaseManager.getTasksForToday())
+        } catch (e: Exception) {
+            Log.e("error", "getTaskIdsForToday() failed", e)
+            Result.Error(e)
+        }
+    }
 
     suspend fun insertUserTasks(userTasks: List<UserTask>): Result<Unit> = withContext(ioDispatcher) {
         return@withContext try {
@@ -23,9 +35,9 @@ class UserTaskRepository private constructor(
         }
     }
 
-    suspend fun updateUserTask(userTask: UserTask): Result<Unit> = withContext(ioDispatcher) {
+    suspend fun updateUserTask(id: Int): Result<Unit> = withContext(ioDispatcher) {
         return@withContext try {
-            Result.Success(userTaskDao.update(userTask))
+            Result.Success(databaseManager.markTaskAsCompleted(id))
         } catch (e: Exception) {
             Log.e("error", "updateUserTasks() failed", e)
             Result.Error(e)
@@ -35,8 +47,10 @@ class UserTaskRepository private constructor(
     companion object {
         private var INSTANCE: UserTaskRepository? = null
 
-        fun getInstance(userTaskDao: UserTaskDao): UserTaskRepository {
-            return INSTANCE ?: UserTaskRepository(userTaskDao = userTaskDao)
+        fun getInstance(userTaskDao: UserTaskDao, dynamoDB: DatabaseManager): UserTaskRepository {
+            return INSTANCE ?: UserTaskRepository(
+                userTaskDao = userTaskDao,
+                databaseManager = dynamoDB)
                     .apply { INSTANCE = this }
         }
     }

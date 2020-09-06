@@ -31,13 +31,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         setContentView(R.layout.activity_main)
 
         val db = AppDatabase.getInstance(this)
+        val dynamoDb = DatabaseManager(this)
 
         setPresenter(
             MainPresenter(
                 this,
                 AppSettings(this),
                 TaskRepository.getInstance(db.taskDao()),
-                UserTaskRepository.getInstance(db.userTaskDao())
+                UserTaskRepository.getInstance(db.userTaskDao(), dynamoDb)
             )
         )
         presenter.onViewCreated()
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         setupDrawerNavigation()
 
         val database = DatabaseManager(this)
-        database.markTaskAsDone(209)
+      //  database.markTaskAsDone(209)
     }
 
     override fun onDestroy() {
