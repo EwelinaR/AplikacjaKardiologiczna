@@ -55,7 +55,7 @@ class NotificationService : IntentService("NotificationService") {
     }
 
     private fun initializeUserTasksForTomorrow() {
-        val db = AppDatabase.getInstance(this)
+        val db = AppDatabase.getInstance(this)  //will be removed
         val dynamoDb = DatabaseManager(this)
 
         val taskInitializer = UserTaskInitializer(

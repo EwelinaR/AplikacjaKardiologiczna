@@ -7,7 +7,11 @@ import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
+/***
+ *
+ *  THIS CLASS WILL BE REMOVED
+ *
+ */
 
 class TaskRepository private constructor(
         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,

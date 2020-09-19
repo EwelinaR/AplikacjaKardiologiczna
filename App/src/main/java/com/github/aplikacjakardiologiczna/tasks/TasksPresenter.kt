@@ -5,7 +5,7 @@ import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.UserTask
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.UserInfo
-import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskDetailsRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
 class TasksPresenter(view: TasksContract.View,
-                     private val userTaskDetailsRepository: UserTaskDetailsRepository,
+                     private val taskDetailsRepository: TaskDetailsRepository,
                      private val userTaskRepository: UserTaskRepository,
                      private val uiContext: CoroutineContext = Dispatchers.Main) : TasksContract.Presenter, CoroutineScope {
 
@@ -66,7 +66,7 @@ class TasksPresenter(view: TasksContract.View,
     }
 
     private fun getTaskDescriptions(group: String, ids: List<Int>): Job = launch {
-        when (val result = userTaskDetailsRepository.getTaskDescriptions(group, ids)) {
+        when (val result = taskDetailsRepository.getTaskDescriptions(group, ids)) {
             is Result.Success<List<TaskDetails>> -> onTasksForTodayLoaded(result.data)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong

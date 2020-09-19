@@ -49,9 +49,6 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         setupBottomNavigation()
         setupDrawerNavigation()
-
-        val database = DatabaseManager(this)
-      //  database.markTaskAsDone(209)
     }
 
     override fun onDestroy() {

@@ -9,6 +9,11 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
 
+/***
+ *
+ *  THIS CLASS IS NOT USED AND WILL BE REMOVED
+ *
+ */
 
 class UpdateSingleValueAsync constructor(
     private val activity: Activity,
@@ -36,7 +41,7 @@ class UpdateSingleValueAsync constructor(
             .withAction(AttributeAction.PUT)
 
         val request = UpdateItemRequest()
-            .withTableName(DynamoDBHelper.TABLE_NAME)
+            .withTableName("patient")
             .withKey(itemKey)
             .withAttributeUpdates(updatedValues)
 

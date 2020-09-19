@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 class UserTaskRepository private constructor(
         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-        private val userTaskDao: UserTaskDao,
+        private val userTaskDao: UserTaskDao,   // will be removed
         private val databaseManager: DatabaseManager
 ) {
 
@@ -44,6 +44,7 @@ class UserTaskRepository private constructor(
         }
     }
 
+    // will be removed
     companion object {
         private var INSTANCE: UserTaskRepository? = null
 

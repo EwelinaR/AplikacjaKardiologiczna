@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.model.database.dynamodb
 
+// TODO after migration move it to entity package
 class UserTask(
     val id: Int,
     val index: Int,

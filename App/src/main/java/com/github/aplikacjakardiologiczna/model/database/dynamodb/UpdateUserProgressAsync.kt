@@ -7,8 +7,13 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
 
+/***
+ *
+ *  THIS CLASS IS NOT USED AND WILL BE REMOVED
+ *
+ */
 
-class UpdatePatientProgressAsync constructor(
+class UpdateUserProgressAsync constructor(
     private val activity: Activity,
     private val nick: String,
     private val date: String,
@@ -36,7 +41,7 @@ class UpdatePatientProgressAsync constructor(
         attributeValues[":time_val"] = AttributeValue().withS(time)
 
         val request = UpdateItemRequest()
-            .withTableName(DynamoDBHelper.TABLE_NAME)
+            .withTableName("patient")
             .withKey(itemKey)
             .withUpdateExpression("SET tasks.#date.#task_id = :time_val")
             .withExpressionAttributeValues(attributeValues)

@@ -7,7 +7,11 @@ import com.github.aplikacjakardiologiczna.model.database.entity.Group
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
+/***
+ *
+ *  THIS CLASS WILL BE REMOVED
+ *
+ */
 class GroupRepository private constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val groupDao: GroupDao

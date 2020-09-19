@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.model.database.dynamodb
 
+// TODO after migration move it to entity package
 class UserInfo(
     val nick: String,
     val group: String,

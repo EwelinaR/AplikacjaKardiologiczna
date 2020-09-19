@@ -15,7 +15,11 @@ import com.github.aplikacjakardiologiczna.model.database.entity.GroupTask
 import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 
-
+/***
+ *
+ *  THIS CLASS WILL BE REMOVED
+ *
+ */
 @Database(entities = [Task::class, UserTask::class, Group::class, GroupTask::class], version = 1)
 @TypeConverters(Converter::class)
 abstract class AppDatabase : RoomDatabase() {
