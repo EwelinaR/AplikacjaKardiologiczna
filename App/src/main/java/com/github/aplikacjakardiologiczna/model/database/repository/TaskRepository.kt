@@ -7,15 +7,16 @@ import com.github.aplikacjakardiologiczna.model.database.entity.Task
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
 /***
  *
- *  THIS CLASS WILL BE REMOVED
+ *  THIS CLASS WILL BE REMOVED In REAL PR - now it is still used for Room database
  *
  */
 
 class TaskRepository private constructor(
-        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-        private val taskDao: TaskDao
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val taskDao: TaskDao
 ) {
 
     suspend fun getAllTasks(): Result<List<Task>> = withContext(ioDispatcher) {
@@ -32,7 +33,7 @@ class TaskRepository private constructor(
 
         fun getInstance(taskDao: TaskDao): TaskRepository {
             return INSTANCE ?: TaskRepository(taskDao = taskDao)
-                    .apply { INSTANCE = this }
+                .apply { INSTANCE = this }
         }
     }
 

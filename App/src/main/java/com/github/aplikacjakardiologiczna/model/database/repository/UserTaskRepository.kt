@@ -12,28 +12,29 @@ import kotlinx.coroutines.withContext
 
 
 class UserTaskRepository private constructor(
-        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-        private val userTaskDao: UserTaskDao,   // will be removed
-        private val databaseManager: DatabaseManager
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val userTaskDao: UserTaskDao,   // will be removed
+    private val databaseManager: DatabaseManager
 ) {
 
-    suspend fun getTaskIdsForToday(): Result<UserInfo> = withContext(ioDispatcher) {
+    suspend fun getUserInfo(): Result<UserInfo> = withContext(ioDispatcher) {
         return@withContext try {
-            Result.Success(databaseManager.getTasksForToday())
+            Result.Success(databaseManager.getUserInfo())
         } catch (e: Exception) {
-            Log.e("error", "getTaskIdsForToday() failed", e)
+            Log.e("error", "getUserInfo() failed", e)
             Result.Error(e)
         }
     }
 
-    suspend fun insertUserTasks(userTasks: List<UserTask>): Result<Unit> = withContext(ioDispatcher) {
-        return@withContext try {
-            Result.Success(userTaskDao.insertAll(userTasks))
-        } catch (e: Exception) {
-            Log.e("error", "insertUserTasks() failed", e)
-            Result.Error(e)
+    suspend fun insertUserTasks(userTasks: List<UserTask>): Result<Unit> =
+        withContext(ioDispatcher) {
+            return@withContext try {
+                Result.Success(userTaskDao.insertAll(userTasks))
+            } catch (e: Exception) {
+                Log.e("error", "insertUserTasks() failed", e)
+                Result.Error(e)
+            }
         }
-    }
 
     suspend fun updateUserTask(id: Int): Result<Unit> = withContext(ioDispatcher) {
         return@withContext try {
@@ -51,8 +52,9 @@ class UserTaskRepository private constructor(
         fun getInstance(userTaskDao: UserTaskDao, dynamoDB: DatabaseManager): UserTaskRepository {
             return INSTANCE ?: UserTaskRepository(
                 userTaskDao = userTaskDao,
-                databaseManager = dynamoDB)
-                    .apply { INSTANCE = this }
+                databaseManager = dynamoDB
+            )
+                .apply { INSTANCE = this }
         }
     }
 }

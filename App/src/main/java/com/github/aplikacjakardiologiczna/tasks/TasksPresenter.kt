@@ -14,10 +14,12 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
-class TasksPresenter(view: TasksContract.View,
-                     private val taskDetailsRepository: TaskDetailsRepository,
-                     private val userTaskRepository: UserTaskRepository,
-                     private val uiContext: CoroutineContext = Dispatchers.Main) : TasksContract.Presenter, CoroutineScope {
+class TasksPresenter(
+    view: TasksContract.View,
+    private val taskDetailsRepository: TaskDetailsRepository,
+    private val userTaskRepository: UserTaskRepository,
+    private val uiContext: CoroutineContext = Dispatchers.Main
+) : TasksContract.Presenter, CoroutineScope {
 
     private var view: TasksContract.View? = view
     private var job: Job = Job()
@@ -27,25 +29,30 @@ class TasksPresenter(view: TasksContract.View,
         get() = uiContext + job
 
     override fun loadTasks() {
-        getTaskIdsForToday()
+        getUserInfo()
     }
 
-    override fun getTasksCount() = if (this::userTasksForToday.isInitialized) userTasksForToday.userTasks.size else 0
+    override fun getTasksCount() =
+        if (this::userTasksForToday.isInitialized) userTasksForToday.userTasks.size else 0
 
     override fun onBindTasksAtPosition(position: Int, itemView: TasksContract.TaskItemView) {
         val task = userTasksForToday.userTasks[position]
         itemView.setImage(R.drawable.ic_run) //Category.valueOf(task.category).categoryIcon) // I AM GIVING UP
         itemView.setTaskName(task.taskDetails.name)
         itemView.setTaskDescription(task.taskDetails.description)
-        userTasksForToday.userTasks.first { it.id == task.id }.time?.let {
+        task.time?.let {
             itemView.crossOffTask(true)
             itemView.checkTask(true)
         }
     }
 
-    override fun onTaskChecked(position: Int, isChecked: Boolean, itemView: TasksContract.TaskItemView) {
+    override fun onTaskChecked(
+        position: Int,
+        isChecked: Boolean,
+        itemView: TasksContract.TaskItemView
+    ) {
         val task = userTasksForToday.userTasks[position]
-        if(task.time == null) {
+        task.time.let {
             task.time = if (isChecked) Calendar.getInstance().time.toString() else null
             updateUserTask(task, itemView)
         }
@@ -56,17 +63,17 @@ class TasksPresenter(view: TasksContract.View,
         job.cancel()
     }
 
-    private fun getTaskIdsForToday(): Job = launch {
-    when (val result = userTaskRepository.getTaskIdsForToday()) {
-            is Result.Success<UserInfo> -> onTaskIdsForTodayLoaded(result.data)
+    private fun getUserInfo(): Job = launch {
+        when (val result = userTaskRepository.getUserInfo()) {
+            is Result.Success<UserInfo> -> onUserInfoLoaded(result.data)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong
             }
         }
     }
 
-    private fun getTaskDescriptions(group: String, ids: List<Int>): Job = launch {
-        when (val result = taskDetailsRepository.getTaskDescriptions(group, ids)) {
+    private fun getTasksDetails(group: String, ids: List<Int>): Job = launch {
+        when (val result = taskDetailsRepository.getTasksDetails(group, ids)) {
             is Result.Success<List<TaskDetails>> -> onTasksForTodayLoaded(result.data)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong
@@ -91,14 +98,14 @@ class TasksPresenter(view: TasksContract.View,
         moveTask(task, moveTo)
     }
 
-    private fun onTaskIdsForTodayLoaded(user: UserInfo) {
+    private fun onUserInfoLoaded(user: UserInfo) {
         this.userTasksForToday = user
-        getTaskDescriptions(user.group, user.userTasks.map { it.id })
+        getTasksDetails(user.group, user.userTasks.map { it.id })
     }
 
     private fun onTasksForTodayLoaded(tasks: List<TaskDetails>) {
-        for (index in 0 until userTasksForToday.userTasks.size){
-            userTasksForToday.userTasks[index].taskDetails = tasks[index]
+        userTasksForToday.userTasks.mapIndexed { index, task ->
+            task.taskDetails = tasks[index]
         }
         view?.onTasksLoaded()
     }

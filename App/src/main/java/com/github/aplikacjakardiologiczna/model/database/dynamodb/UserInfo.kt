@@ -11,7 +11,3 @@ class UserInfo(
         return "UserInfo [nick: ${this.nick}, group: ${this.group}, userTasks: ${this.userTasks}]"
     }
 }
-
-
-
-

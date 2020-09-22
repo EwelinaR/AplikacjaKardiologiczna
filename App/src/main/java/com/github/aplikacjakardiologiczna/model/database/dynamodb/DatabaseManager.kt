@@ -7,12 +7,12 @@ import com.google.gson.Gson
 import java.text.DateFormat
 import java.util.Date
 
-
 class DatabaseManager constructor(context: Context) {
 
     // temporary using test name
     private val NICK = "TEST"
     private val databaseAccess = DatabaseAccess(context)
+    private val DB_TAG = "DB"
 
     private fun getTodaysDate(): String {
         return "05-09-2020" // for tests
@@ -27,32 +27,32 @@ class DatabaseManager constructor(context: Context) {
 
     fun markTaskAsCompleted(taskId: Int) {
         databaseAccess.writeTimeOfTask(taskId, getTodaysDate(), getTodaysTime(), NICK)
-        Log.e("DB", "Completed task: $taskId")
+        Log.i(DB_TAG, "Completed task: $taskId")
     }
 
     fun createTasks(taskIds: List<Int>, isForToday: Boolean = false) {
         //TODO
     }
 
-    fun getTasksForToday(): UserInfo {
-        val doc = databaseAccess.readUserTasks(getTodaysDate(), NICK)
-        val user =  Gson().fromJson(Document.toJson(doc), UserInfo::class.java)
-        Log.e("DB", user.toString())
+    fun getUserInfo(): UserInfo {
+        val doc = databaseAccess.readUserInfo(getTodaysDate(), NICK)
+        val user = Gson().fromJson(Document.toJson(doc), UserInfo::class.java)
+        Log.i(DB_TAG, user.toString())
         return user
     }
 
     fun setGroup(group: String) {
         // TODO
-       // UpdateSingleValueAsync(activity, NICK, "group", group)
+        // UpdateSingleValueAsync(activity, NICK, "group", group)
     }
 
-    fun getTaskDescription(group: String, ids: List<Int>): List<TaskDetails> {
+    fun getTasksDetails(group: String, ids: List<Int>): List<TaskDetails> {
         val tasks = ArrayList<TaskDetails>()
-        for(id in ids) {
+        for (id in ids) {
             val doc = databaseAccess.readTaskFromDatabase(group, id)
             tasks.add(Gson().fromJson(Document.toJson(doc), TaskDetails::class.java))
         }
-        Log.e("DB", tasks.toString())
+        Log.i(DB_TAG, tasks.toString())
         return tasks
     }
 
@@ -60,11 +60,10 @@ class DatabaseManager constructor(context: Context) {
         val taskIds = ArrayList<Int>()
         val result = databaseAccess.readTasksFromDatabase(group)
 
-        for (item in result.items) {
-            val s = item.get("id")?.n
-            if (s != null) taskIds.add(s.toInt())
+        return result.items.mapNotNull {
+            it.get("id")?.n?.toInt()
+        }.also {
+            Log.i(DB_TAG, taskIds.toString())
         }
-        Log.e("DB", taskIds.toString())
-        return taskIds
     }
 }

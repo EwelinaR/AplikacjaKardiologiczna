@@ -17,7 +17,7 @@ import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 
 /***
  *
- *  THIS CLASS WILL BE REMOVED
+ *  THIS CLASS WILL BE REMOVED IN REAL PR - now it is still used for Room database
  *
  */
 @Database(entities = [Task::class, UserTask::class, Group::class, GroupTask::class], version = 1)
