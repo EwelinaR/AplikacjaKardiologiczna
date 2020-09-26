@@ -2,7 +2,7 @@ package com.github.aplikacjakardiologiczna.main
 
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
 class MainPresenter(
     view: MainContract.View,
     private val settings: AppSettings,
-    private val taskRepository: TaskRepository,
+    private val taskDetailsRepository: TaskDetailsRepository,
     private val userTaskRepository: UserTaskRepository,
     private val uiContext: CoroutineContext = Dispatchers.Main
 ) : MainContract.Presenter, CoroutineScope {
@@ -45,7 +45,7 @@ class MainPresenter(
 
     private fun initializeFirstUserTasks() {
         val taskInitializer = UserTaskInitializer(
-            taskRepository,
+            taskDetailsRepository,
             userTaskRepository,
             ::initializeFirstUserTasksCallback
         )

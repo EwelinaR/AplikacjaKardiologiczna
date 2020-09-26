@@ -47,7 +47,6 @@ class DatabaseAccess constructor(private val context: Context) {
         client.updateItem(request)
     }
 
-
     fun readTaskFromDatabase(group: String, id: Int): Document? {
         val client = getDatabaseClient()
         val dbTable = Table.loadTable(client, DynamoDBHelper.TASK_TABLE_NAME)
@@ -74,6 +73,13 @@ class DatabaseAccess constructor(private val context: Context) {
             .withExpressionAttributeNames(attributeNames)
 
         return client.scan(scanRequest)
+    }
+
+    fun addUserInfo(userInfo: String) {
+        val client = getDatabaseClient()
+        val dbTable = Table.loadTable(client, DynamoDBHelper.USER_TABLE_NAME)
+
+        dbTable.putItem(Document.fromJson(userInfo))
     }
 
     private fun getDatabaseClient(): AmazonDynamoDB {

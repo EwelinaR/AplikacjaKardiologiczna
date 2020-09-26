@@ -1,10 +1,13 @@
 package com.github.aplikacjakardiologiczna.tasks
 
 import com.github.aplikacjakardiologiczna.R
+import com.github.aplikacjakardiologiczna.model.database.Category
 import com.github.aplikacjakardiologiczna.model.database.Result
-import com.github.aplikacjakardiologiczna.model.database.dynamodb.UserTask
-import com.github.aplikacjakardiologiczna.model.database.dynamodb.TaskDetails
-import com.github.aplikacjakardiologiczna.model.database.dynamodb.UserInfo
+import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
+import com.github.aplikacjakardiologiczna.model.database.converter.CategoryConverter
+import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
+import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
+import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +26,7 @@ class TasksPresenter(
 
     private var view: TasksContract.View? = view
     private var job: Job = Job()
+    private var tasksSuccessfullyInitialized = false
     private lateinit var userTasksForToday: UserInfo
 
     override val coroutineContext: CoroutineContext
@@ -37,9 +41,16 @@ class TasksPresenter(
 
     override fun onBindTasksAtPosition(position: Int, itemView: TasksContract.TaskItemView) {
         val task = userTasksForToday.userTasks[position]
-        itemView.setImage(R.drawable.ic_run) //Category.valueOf(task.category).categoryIcon) // I AM GIVING UP
-        itemView.setTaskName(task.taskDetails.name)
-        itemView.setTaskDescription(task.taskDetails.description)
+        task.taskDetails?.category?.let {
+            CategoryConverter.toCategory(it)?.let {
+                    it1 -> itemView.setImage(it1)
+            }
+        }
+        task.taskDetails?.let {
+            itemView.setTaskName(it.name)
+            itemView.setTaskDescription(it.description)
+        }
+
         task.time?.let {
             itemView.crossOffTask(true)
             itemView.checkTask(true)
@@ -67,8 +78,30 @@ class TasksPresenter(
         when (val result = userTaskRepository.getUserInfo()) {
             is Result.Success<UserInfo> -> onUserInfoLoaded(result.data)
             is Result.Error -> {
-                //TODO Show a snackbar/toast saying that something went wrong
+                if (!tasksSuccessfullyInitialized) {
+                    initializeUserTasksForToday()
+                } else {
+                    //TODO Show a snackbar/toast saying that something went wrong
+                }
             }
+        }
+    }
+
+    private fun initializeUserTasksForToday() {
+        val taskInitializer = UserTaskInitializer(
+            taskDetailsRepository,
+            userTaskRepository,
+            ::initializeUserTasksCallback
+        )
+        taskInitializer.initializeUserTasks(false)
+    }
+
+    private fun initializeUserTasksCallback(wasSuccessful: Boolean) {
+        if (wasSuccessful) {
+            tasksSuccessfullyInitialized = true
+            getUserInfo()
+        } else {
+            //TODO Show a snackbar/toast saying that something went wrong
         }
     }
 

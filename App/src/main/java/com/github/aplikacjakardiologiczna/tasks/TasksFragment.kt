@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.aplikacjakardiologiczna.R
-import com.github.aplikacjakardiologiczna.model.database.AppDatabase
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
@@ -22,12 +21,11 @@ class TasksFragment : Fragment(), TasksContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db = AppDatabase.getInstance(requireContext())
         val dynamoDb = DatabaseManager(requireContext())
 
         setPresenter(TasksPresenter(this,
                 TaskDetailsRepository(dynamoDb),
-                UserTaskRepository.getInstance(db.userTaskDao(), dynamoDb)  // will be changed as a UserTaskDetailsRepository
+                UserTaskRepository(dynamoDb)
         ))
     }
 

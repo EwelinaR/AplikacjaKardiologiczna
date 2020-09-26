@@ -3,49 +3,58 @@ package com.github.aplikacjakardiologiczna.model.database
 import com.github.aplikacjakardiologiczna.AppConstants
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.today
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.tomorrow
-import com.github.aplikacjakardiologiczna.model.database.entity.Task
+import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.DateFormat
 import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
 class UserTaskInitializer(
-    private val taskRepository: TaskRepository,
+    private val taskDetailsRepository: TaskDetailsRepository,
     private val userTaskRepository: UserTaskRepository,
     private val callback: (Boolean) -> Unit
 ) : CoroutineScope {
 
     private var job: Job = Job()
+    private val nick = "TEST"
+    private val group = "A"
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
 
     fun initializeUserTasks(forToday: Boolean): Job = launch {
-        when (val result = taskRepository.getAllTasks()) {
-            is Result.Success<List<Task>> -> onTasksLoaded(result.data, forToday)
+        when (val result = taskDetailsRepository.getTasksFromGroup(group)) {
+            is Result.Success<List<Int>> -> onTasksLoaded(result.data, forToday)
             is Result.Error -> callback(false)
         }
     }
 
-    private fun onTasksLoaded(tasks: List<Task>, forToday: Boolean) {
+    private fun onTasksLoaded(tasks: List<Int>, forToday: Boolean) {
         val numberOfTasks = if (tasks.size < AppConstants.TASKS_PER_DAY) tasks.size else AppConstants.TASKS_PER_DAY
         val randomTasks = tasks.shuffled().subList(0, numberOfTasks)
 
+        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
         val calendar = Calendar.getInstance()
         val startDate = if (forToday) calendar.today else calendar.tomorrow
+        val formattedDate = dateFormat.format(startDate.time)
 
-        val userTasks = randomTasks.map {UserTask(it.id, startDate)}
-
-        insertUserTasks(userTasks)
+        insertUserTasks(randomTasks, formattedDate)
     }
 
-    private fun insertUserTasks(userTasks: List<UserTask>): Job = launch {
-        val result = userTaskRepository.insertUserTasks(userTasks)
+    private fun insertUserTasks(taskIds: List<Int>, startDate: String): Job = launch {
+        val userTasks = ArrayList<UserTask>()
+        taskIds.mapIndexedTo (userTasks, {
+                index, taskId -> UserTask(taskId, index, null, null)
+        })
+        val userInfo = UserInfo(nick, startDate, group, userTasks)
+
+        val result = userTaskRepository.insertUserTasks(userInfo)
         callback(result is Result.Success<Unit>)
     }
 }

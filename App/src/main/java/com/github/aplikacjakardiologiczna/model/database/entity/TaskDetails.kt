@@ -1,6 +1,5 @@
-package com.github.aplikacjakardiologiczna.model.database.dynamodb
+package com.github.aplikacjakardiologiczna.model.database.entity
 
-// TODO after migration move it to entity package
 class TaskDetails(
     val group: String,
     val id: Int,

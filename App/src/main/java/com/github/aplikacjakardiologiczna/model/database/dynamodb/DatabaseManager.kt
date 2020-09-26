@@ -3,21 +3,21 @@ package com.github.aplikacjakardiologiczna.model.database.dynamodb
 import android.content.Context
 import android.util.Log
 import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document
+import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
+import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.google.gson.Gson
 import java.text.DateFormat
 import java.util.Date
 
 class DatabaseManager constructor(context: Context) {
 
-    // temporary using test name
     private val NICK = "TEST"
     private val databaseAccess = DatabaseAccess(context)
     private val DB_TAG = "DB"
 
     private fun getTodaysDate(): String {
-        return "05-09-2020" // for tests
-//        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
-//        return dateFormat.format(Date())
+        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
+        return dateFormat.format(Date())
     }
 
     private fun getTodaysTime(): String {
@@ -30,8 +30,10 @@ class DatabaseManager constructor(context: Context) {
         Log.i(DB_TAG, "Completed task: $taskId")
     }
 
-    fun createTasks(taskIds: List<Int>, isForToday: Boolean = false) {
-        //TODO
+    fun createTasks(userInfo: UserInfo) {
+        val jsonUserInfo: String = Gson().toJson(userInfo)
+        databaseAccess.addUserInfo(jsonUserInfo)
+        Log.i(DB_TAG, jsonUserInfo)
     }
 
     fun getUserInfo(): UserInfo {
@@ -39,11 +41,6 @@ class DatabaseManager constructor(context: Context) {
         val user = Gson().fromJson(Document.toJson(doc), UserInfo::class.java)
         Log.i(DB_TAG, user.toString())
         return user
-    }
-
-    fun setGroup(group: String) {
-        // TODO
-        // UpdateSingleValueAsync(activity, NICK, "group", group)
     }
 
     fun getTasksDetails(group: String, ids: List<Int>): List<TaskDetails> {
@@ -57,10 +54,8 @@ class DatabaseManager constructor(context: Context) {
     }
 
     fun getTaskIdsFromGroup(group: String): List<Int> {
-        val taskIds = ArrayList<Int>()
-        val result = databaseAccess.readTasksFromDatabase(group)
-
-        return result.items.mapNotNull {
+        val taskIds = databaseAccess.readTasksFromDatabase(group)
+        return taskIds.items.mapNotNull {
             it.get("id")?.n?.toInt()
         }.also {
             Log.i(DB_TAG, taskIds.toString())

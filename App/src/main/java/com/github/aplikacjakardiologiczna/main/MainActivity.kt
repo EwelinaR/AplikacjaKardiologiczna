@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
-import com.github.aplikacjakardiologiczna.model.database.AppDatabase
+import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskRepository
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import com.github.aplikacjakardiologiczna.tasks.TasksFragment
@@ -30,15 +30,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val db = AppDatabase.getInstance(this)
         val dynamoDb = DatabaseManager(this)
 
         setPresenter(
             MainPresenter(
                 this,
                 AppSettings(this),
-                TaskRepository.getInstance(db.taskDao()),
-                UserTaskRepository.getInstance(db.userTaskDao(), dynamoDb)
+                TaskDetailsRepository(dynamoDb),
+                UserTaskRepository(dynamoDb)
             )
         )
         presenter.onViewCreated()
