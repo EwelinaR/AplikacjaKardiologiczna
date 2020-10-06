@@ -52,7 +52,7 @@ class UserTaskInitializer(
         taskIds.mapIndexedTo (userTasks, {
                 index, taskId -> UserTask(taskId, index, null, null)
         })
-        val userInfo = UserInfo(nick, startDate, group, userTasks)
+        val userInfo = UserInfo(nick, group, startDate, userTasks)
 
         val result = userTaskRepository.insertUserTasks(userInfo)
         callback(result is Result.Success<Unit>)

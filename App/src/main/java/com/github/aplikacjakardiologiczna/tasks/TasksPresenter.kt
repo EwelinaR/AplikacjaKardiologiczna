@@ -1,7 +1,5 @@
 package com.github.aplikacjakardiologiczna.tasks
 
-import com.github.aplikacjakardiologiczna.R
-import com.github.aplikacjakardiologiczna.model.database.Category
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.converter.CategoryConverter
@@ -93,7 +91,7 @@ class TasksPresenter(
             userTaskRepository,
             ::initializeUserTasksCallback
         )
-        taskInitializer.initializeUserTasks(false)
+        taskInitializer.initializeUserTasks(true)
     }
 
     private fun initializeUserTasksCallback(wasSuccessful: Boolean) {
