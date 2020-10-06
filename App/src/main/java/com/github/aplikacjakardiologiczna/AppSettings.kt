@@ -11,9 +11,14 @@ class AppSettings(context: Context) {
         get() = sharedPreferences.getBoolean(PREF_FIRST_RUN, true)
         set(value) = sharedPreferences.edit().putBoolean(PREF_FIRST_RUN, value).apply()
 
+    var username: String?
+        get() = sharedPreferences.getString(PREF_USERNAME, null)
+        set(value) = sharedPreferences.edit().putString(PREF_USERNAME, value).apply()
+
     companion object {
         const val PREF_FILE_NAME = "PREF_APP_SETTINGS"
         private const val PREF_FIRST_RUN = "PREF_FIRST_RUN"
+        private const val PREF_USERNAME = "PREF_USERNAME"
     }
 
     init {

@@ -54,4 +54,9 @@ class TasksFragment : Fragment(), TasksContract.View {
     override fun setPresenter(presenter: TasksContract.Presenter) {
         this.presenter = presenter
     }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
+    }
 }

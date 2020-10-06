@@ -4,7 +4,7 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.aplikacjakardiologiczna.R
@@ -32,14 +32,13 @@ class TasksAdapter(private val presenter: TasksContract.Presenter) : RecyclerVie
             RecyclerView.ViewHolder(taskView), TasksContract.TaskItemView {
 
         init {
-            taskView.checkbox_item_task.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener(
-                    fun(_: CompoundButton, isChecked: Boolean) {
-                        crossOffTask(isChecked)
-                        presenter.onTaskChecked(adapterPosition, isChecked, this)
+            taskView.checkbox_item_task.setOnClickListener {
+                val isChecked = (it as CheckBox).isChecked
+                crossOffTask(isChecked)
+                presenter.onTaskChecked(adapterPosition, isChecked, this)
 
-                        taskView.checkbox_item_task.isEnabled = false
-                    }
-            ))
+                taskView.checkbox_item_task.isEnabled = false
+            }
         }
 
         override fun setImage(resource: Int) {

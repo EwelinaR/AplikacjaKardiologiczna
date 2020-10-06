@@ -11,4 +11,8 @@
     <string name="category_food">zdrowe odżywianie</string>
     <string name="category_medicine">przyjmowanie leków</string>
     <string name="category_pressure">pomiar ciśnienia</string>
+    <string name="enter_username">Wpisz nazwę użytkownika, którą podał Ci lekarz.</string>
+    <string name="confirm">Potwierdź</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="empty_username_validation_message">Pole z nazwą użytkownika nie może być puste.</string>
 </resources>
