@@ -13,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Calendar
+import java.util.Locale
 import kotlin.coroutines.CoroutineContext
 
 class UserTaskInitializer(
@@ -39,7 +40,8 @@ class UserTaskInitializer(
         val numberOfTasks = if (tasks.size < AppConstants.TASKS_PER_DAY) tasks.size else AppConstants.TASKS_PER_DAY
         val randomTasks = tasks.shuffled().subList(0, numberOfTasks)
 
-        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
+        val poland = Locale("pl","PL","PL")
+        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, poland)
         val calendar = Calendar.getInstance()
         val startDate = if (forToday) calendar.today else calendar.tomorrow
         val formattedDate = dateFormat.format(startDate.time)

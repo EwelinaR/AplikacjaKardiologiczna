@@ -8,15 +8,20 @@ import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.google.gson.Gson
 import java.text.DateFormat
 import java.util.Date
+import java.util.Locale
 
 class DatabaseManager constructor(context: Context) {
 
-    private val NICK = "TEST"
+    companion object {
+        private const val NICK = "TEST"
+        private const val DB_TAG = "DB"
+    }
+
     private val databaseAccess = DatabaseAccess(context)
-    private val DB_TAG = "DB"
 
     private fun getTodaysDate(): String {
-        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
+        val poland = Locale("pl","PL","PL")
+        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, poland)
         return dateFormat.format(Date())
     }
 
@@ -56,7 +61,7 @@ class DatabaseManager constructor(context: Context) {
     fun getTaskIdsFromGroup(group: String): List<Int> {
         val taskIds = databaseAccess.readTasksFromDatabase(group)
         return taskIds.items.mapNotNull {
-            it.get("id")?.n?.toInt()
+            it["id"]?.n?.toInt()
         }.also {
             Log.i(DB_TAG, taskIds.toString())
         }

@@ -61,7 +61,7 @@ class TasksPresenter(
         itemView: TasksContract.TaskItemView
     ) {
         val task = userTasksForToday.userTasks[position]
-        task.time.let {
+        task.let {
             task.time = if (isChecked) Calendar.getInstance().time.toString() else null
             updateUserTask(task, itemView)
         }
@@ -138,6 +138,7 @@ class TasksPresenter(
         userTasksForToday.userTasks.mapIndexed { index, task ->
             task.taskDetails = tasks[index]
         }
+        userTasksForToday.userTasks.sortBy { it.time }
         view?.onTasksLoaded()
     }
 
