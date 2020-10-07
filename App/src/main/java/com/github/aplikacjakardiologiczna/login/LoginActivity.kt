@@ -7,7 +7,6 @@ import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.ErrorMessage
-import com.github.aplikacjakardiologiczna.model.database.AppDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.buttonConfirm
 import kotlinx.android.synthetic.main.activity_login.editTextUsername
@@ -21,8 +20,6 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        val db = AppDatabase.getInstance(this)
 
         buttonConfirm.setOnClickListener {
             presenter.onConfirmButtonPressed(editTextUsername.text.toString())

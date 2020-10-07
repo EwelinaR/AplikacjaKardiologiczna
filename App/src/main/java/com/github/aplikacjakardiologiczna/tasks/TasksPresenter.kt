@@ -1,8 +1,12 @@
 package com.github.aplikacjakardiologiczna.tasks
 
 import com.github.aplikacjakardiologiczna.model.database.Result
-import com.github.aplikacjakardiologiczna.model.database.entity.UserTaskDetails
-import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskDetailsRepository
+import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
+import com.github.aplikacjakardiologiczna.model.database.converter.CategoryConverter
+import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
+import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
+import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
+import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,39 +15,56 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
-class TasksPresenter(view: TasksContract.View,
-                     private val userTaskDetailsRepository: UserTaskDetailsRepository,
-                     private val userTaskRepository: UserTaskRepository,
-                     private val uiContext: CoroutineContext = Dispatchers.Main) : TasksContract.Presenter, CoroutineScope {
+class TasksPresenter(
+    view: TasksContract.View,
+    private val taskDetailsRepository: TaskDetailsRepository,
+    private val userTaskRepository: UserTaskRepository,
+    private val uiContext: CoroutineContext = Dispatchers.Main
+) : TasksContract.Presenter, CoroutineScope {
 
     private var view: TasksContract.View? = view
     private var job: Job = Job()
-    private var tasksForToday = ArrayList<UserTaskDetails>()
+    private var tasksSuccessfullyInitialized = false
+    private lateinit var userTasksForToday: UserInfo
 
     override val coroutineContext: CoroutineContext
         get() = uiContext + job
 
     override fun loadTasks() {
-        getTasksForToday()
+        getUserInfo()
     }
 
-    override fun getTasksCount() = tasksForToday.size
+    override fun getTasksCount() =
+        if (this::userTasksForToday.isInitialized) userTasksForToday.userTasks.size else 0
 
     override fun onBindTasksAtPosition(position: Int, itemView: TasksContract.TaskItemView) {
-        val task = tasksForToday[position]
-        itemView.setImage(task.details.category.categoryIcon)
-        itemView.setTaskName(task.details.name)
-        itemView.setTaskDescription(task.details.description)
-        task.userTask?.completionDateTime?.let {
+        val task = userTasksForToday.userTasks[position]
+        task.taskDetails?.category?.let {
+            CategoryConverter.toCategory(it)?.let {
+                    it1 -> itemView.setImage(it1)
+            }
+        }
+        task.taskDetails?.let {
+            itemView.setTaskName(it.name)
+            itemView.setTaskDescription(it.description)
+        }
+
+        task.time?.let {
             itemView.crossOffTask(true)
             itemView.checkTask(true)
         }
     }
 
-    override fun onTaskChecked(position: Int, isChecked: Boolean, itemView: TasksContract.TaskItemView) {
-        val task = tasksForToday[position]
-        task.userTask?.completionDateTime = if (isChecked) Calendar.getInstance().time else null
-        updateUserTask(task, itemView)
+    override fun onTaskChecked(
+        position: Int,
+        isChecked: Boolean,
+        itemView: TasksContract.TaskItemView
+    ) {
+        val task = userTasksForToday.userTasks[position]
+        task.let {
+            task.time = if (isChecked) Calendar.getInstance().time.toString() else null
+            updateUserTask(task, itemView)
+        }
     }
 
     override fun onDestroy() {
@@ -51,43 +72,80 @@ class TasksPresenter(view: TasksContract.View,
         job.cancel()
     }
 
-    private fun getTasksForToday(): Job = launch {
-        when (val result = userTaskDetailsRepository.getTasksForToday()) {
-            is Result.Success<List<UserTaskDetails>> -> onTasksForTodayLoaded(result.data)
+    private fun getUserInfo(): Job = launch {
+        when (val result = userTaskRepository.getUserInfo()) {
+            is Result.Success<UserInfo> -> onUserInfoLoaded(result.data)
+            is Result.Error -> {
+                if (!tasksSuccessfullyInitialized) {
+                    initializeUserTasksForToday()
+                } else {
+                    //TODO Show a snackbar/toast saying that something went wrong
+                }
+            }
+        }
+    }
+
+    private fun initializeUserTasksForToday() {
+        val taskInitializer = UserTaskInitializer(
+            taskDetailsRepository,
+            userTaskRepository,
+            ::initializeUserTasksCallback
+        )
+        taskInitializer.initializeUserTasks(true)
+    }
+
+    private fun initializeUserTasksCallback(wasSuccessful: Boolean) {
+        if (wasSuccessful) {
+            tasksSuccessfullyInitialized = true
+            getUserInfo()
+        } else {
+            //TODO Show a snackbar/toast saying that something went wrong
+        }
+    }
+
+    private fun getTasksDetails(group: String, ids: List<Int>): Job = launch {
+        when (val result = taskDetailsRepository.getTasksDetails(group, ids)) {
+            is Result.Success<List<TaskDetails>> -> onTasksForTodayLoaded(result.data)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong
             }
         }
     }
 
-    private fun updateUserTask(task: UserTaskDetails, itemView: TasksContract.TaskItemView): Job = launch {
-        when (task.userTask?.let { userTaskRepository.updateUserTask(it) }) {
+    private fun updateUserTask(task: UserTask, itemView: TasksContract.TaskItemView): Job = launch {
+        val dbPosition = task.index
+        when (dbPosition.let { userTaskRepository.updateUserTask(it) }) {
             is Result.Success -> onUserTaskUpdated(task, itemView)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong
-                getTasksForToday()
             }
         }
     }
 
-    private fun onUserTaskUpdated(task: UserTaskDetails, itemView: TasksContract.TaskItemView) {
-        val isTaskCompleted = task.userTask?.completionDateTime != null
+    private fun onUserTaskUpdated(task: UserTask, itemView: TasksContract.TaskItemView) {
+        val isTaskCompleted = task.time != null
         itemView.crossOffTask(isTaskCompleted)
-
-        val moveTo = if (isTaskCompleted) (tasksForToday.size - 1) else 0
+        val moveTo = if (isTaskCompleted) (userTasksForToday.userTasks.size - 1) else 0
         moveTask(task, moveTo)
     }
 
-    private fun onTasksForTodayLoaded(tasks: List<UserTaskDetails>) {
-        tasksForToday = ArrayList(tasks)
-        tasksForToday.sortBy { it.userTask?.completionDateTime }
+    private fun onUserInfoLoaded(user: UserInfo) {
+        this.userTasksForToday = user
+        getTasksDetails(user.group, user.userTasks.map { it.id })
+    }
+
+    private fun onTasksForTodayLoaded(tasks: List<TaskDetails>) {
+        userTasksForToday.userTasks.mapIndexed { index, task ->
+            task.taskDetails = tasks[index]
+        }
+        userTasksForToday.userTasks.sortBy { it.time }
         view?.onTasksLoaded()
     }
 
-    private fun moveTask(task: UserTaskDetails, to: Int) {
-        val position = tasksForToday.indexOf(task)
-        tasksForToday.removeAt(position)
-        tasksForToday.add(to, task)
+    private fun moveTask(userTask: UserTask, to: Int) {
+        val position = userTasksForToday.userTasks.indexOf(userTask)
+        userTasksForToday.userTasks.removeAt(position)
+        userTasksForToday.userTasks.add(to, userTask)
 
         view?.onTaskMoved(position, to)
     }
