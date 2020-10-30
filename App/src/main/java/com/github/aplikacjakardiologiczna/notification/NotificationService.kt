@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.aplikacjakardiologiczna.R
@@ -19,31 +18,32 @@ import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManage
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 
-class NotificationService : IntentService("NotificationService") {
+class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
 
     private lateinit var notification: Notification
 
     companion object {
         const val NOTIFICATION_ID = 112
         private const val CHANNEL_ID = "aplikacjakardiologiczna_notification_tasks"
-        private const val CHANNEL_NAME = "reminder"
-        private const val CHANNEL_DESCRIPTION = "Reminder about tasks"
+        private const val NOTIFICATION_SERVICE_NAME = "NotificationService"
     }
 
     private fun createChannel() {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
-            )
-            channel.enableLights(true)
-            channel.lightColor = Color.RED
-            channel.enableVibration(true)
-            channel.description =
-                    CHANNEL_DESCRIPTION
+                CHANNEL_ID,
+                getString(R.string.notification_name),
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+                description = getString(R.string.notification_description)
+            }
+
             notificationManager.createNotificationChannel(channel)
         }
     }
@@ -69,7 +69,6 @@ class NotificationService : IntentService("NotificationService") {
     }
 
     private fun showNotification() {
-        Log.i("NOTIFICATION", "Showing new notification")
         createChannel()
         buildNotification()
         with(NotificationManagerCompat.from(this)) {
@@ -93,7 +92,8 @@ class NotificationService : IntentService("NotificationService") {
         }
         val buttonPendingIntent = PendingIntent.getBroadcast(this, 0, buttonIntent, 0)
 
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID
+        val builder = NotificationCompat.Builder(
+            this, CHANNEL_ID
         ).apply {
             setSmallIcon(R.drawable.notify_heart)
             setContentIntent(pendingIntent)
@@ -101,8 +101,10 @@ class NotificationService : IntentService("NotificationService") {
             setContentText(activityDescription)
             setAutoCancel(true)
             priority = NotificationCompat.PRIORITY_DEFAULT
-            addAction(R.drawable.notify_heart, getString(R.string.notify_button),
-                buttonPendingIntent)
+            addAction(
+                R.drawable.notify_heart, getString(R.string.notify_button),
+                buttonPendingIntent
+            )
         }
         notification = builder.build()
         startForeground(1, notification)

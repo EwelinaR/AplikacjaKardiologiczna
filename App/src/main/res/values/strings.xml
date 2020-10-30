@@ -14,4 +14,6 @@
     <string name="confirm">Confirm</string>
     <string name="username">Username</string>
     <string name="empty_username_validation_message">Username field cannot be empty.</string>
+    <string name="notification_name">Uncompleted tasks</string>
+    <string name="notification_description">Reminder about uncompleted tasks</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.github.aplikacjakardiologiczna.model.database.entity
 
-// TODO after migration move it to entity package
 class UserInfo(
     val nick: String,
     val group: String,

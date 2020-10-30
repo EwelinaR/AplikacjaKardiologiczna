@@ -15,4 +15,6 @@
     <string name="confirm">Potwierdź</string>
     <string name="username">Nazwa użytkownika</string>
     <string name="empty_username_validation_message">Pole z nazwą użytkownika nie może być puste.</string>
+    <string name="notification_name">Niewykonane zadania</string>
+    <string name="notification_description">Przypomnienie o niewykonanych zadaniach</string>
 </resources>
