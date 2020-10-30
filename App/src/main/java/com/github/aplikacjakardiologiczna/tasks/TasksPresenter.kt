@@ -25,7 +25,7 @@ class TasksPresenter(
     private var view: TasksContract.View? = view
     private var job: Job = Job()
     private var tasksSuccessfullyInitialized = false
-    private lateinit var userTasksForToday: UserInfo
+    private lateinit var userInfo: UserInfo
 
     override val coroutineContext: CoroutineContext
         get() = uiContext + job
@@ -35,10 +35,10 @@ class TasksPresenter(
     }
 
     override fun getTasksCount() =
-        if (this::userTasksForToday.isInitialized) userTasksForToday.userTasks.size else 0
+        if (this::userInfo.isInitialized) userInfo.userTasks.size else 0
 
     override fun onBindTasksAtPosition(position: Int, itemView: TasksContract.TaskItemView) {
-        val task = userTasksForToday.userTasks[position]
+        val task = userInfo.userTasks[position]
         task.taskDetails?.category?.let {
             CategoryConverter.toCategory(it)?.let {
                     it1 -> itemView.setImage(it1)
@@ -60,7 +60,7 @@ class TasksPresenter(
         isChecked: Boolean,
         itemView: TasksContract.TaskItemView
     ) {
-        val task = userTasksForToday.userTasks[position]
+        val task = userInfo.userTasks[position]
         task.let {
             task.time = if (isChecked) Calendar.getInstance().time.toString() else null
             updateUserTask(task, itemView)
@@ -125,27 +125,27 @@ class TasksPresenter(
     private fun onUserTaskUpdated(task: UserTask, itemView: TasksContract.TaskItemView) {
         val isTaskCompleted = task.time != null
         itemView.crossOffTask(isTaskCompleted)
-        val moveTo = if (isTaskCompleted) (userTasksForToday.userTasks.size - 1) else 0
+        val moveTo = if (isTaskCompleted) (userInfo.userTasks.size - 1) else 0
         moveTask(task, moveTo)
     }
 
-    private fun onUserInfoLoaded(user: UserInfo) {
-        this.userTasksForToday = user
-        getTasksDetails(user.group, user.userTasks.map { it.id })
+    private fun onUserInfoLoaded(userInfo: UserInfo) {
+        this.userInfo = userInfo
+        getTasksDetails(userInfo.group, userInfo.userTasks.map { it.id })
     }
 
     private fun onTasksForTodayLoaded(tasks: List<TaskDetails>) {
-        userTasksForToday.userTasks.mapIndexed { index, task ->
+        userInfo.userTasks.mapIndexed { index, task ->
             task.taskDetails = tasks[index]
         }
-        userTasksForToday.userTasks.sortBy { it.time }
+        userInfo.userTasks.sortBy { it.time }
         view?.onTasksLoaded()
     }
 
     private fun moveTask(userTask: UserTask, to: Int) {
-        val position = userTasksForToday.userTasks.indexOf(userTask)
-        userTasksForToday.userTasks.removeAt(position)
-        userTasksForToday.userTasks.add(to, userTask)
+        val position = userInfo.userTasks.indexOf(userTask)
+        userInfo.userTasks.removeAt(position)
+        userInfo.userTasks.add(to, userTask)
 
         view?.onTaskMoved(position, to)
     }

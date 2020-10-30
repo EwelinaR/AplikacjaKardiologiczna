@@ -15,17 +15,53 @@ import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
+import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 
 class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
 
-    private lateinit var notification: Notification
-
     companion object {
         const val NOTIFICATION_ID = 112
         private const val CHANNEL_ID = "aplikacjakardiologiczna_notification_tasks"
         private const val NOTIFICATION_SERVICE_NAME = "NotificationService"
+        const val EXTRA_UNCOMPLETED_TASK = "UNCOMPLETED_TASK"
+    }
+
+    override fun onHandleIntent(intent: Intent?) {
+        initializeUserTasksForTomorrow()
+
+        intent?.extras?.let {
+            if (it.containsKey(EXTRA_UNCOMPLETED_TASK)) {
+                val uncompletedTask =
+                    intent.getSerializableExtra(EXTRA_UNCOMPLETED_TASK) as TaskDetails
+                showNotification(uncompletedTask)
+            }
+        }
+    }
+
+    private fun initializeUserTasksForTomorrow() {
+        val dynamoDb = DatabaseManager(this)
+
+        val taskInitializer = UserTaskInitializer(
+            TaskDetailsRepository(dynamoDb),
+            UserTaskRepository(dynamoDb),
+            ::initializeTasksCallback
+        )
+        taskInitializer.initializeUserTasks(false)
+    }
+
+    private fun initializeTasksCallback(wasSuccessful: Boolean) {
+        // TODO Do sth
+    }
+
+    private fun showNotification(taskDetails: TaskDetails) {
+        createChannel()
+        val notification = buildNotification(taskDetails)
+        startForeground(1, notification)
+        with(NotificationManagerCompat.from(this)) {
+            notify(NOTIFICATION_ID, notification)
+        }
     }
 
     private fun createChannel() {
@@ -48,65 +84,29 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
         }
     }
 
-    override fun onHandleIntent(intent: Intent?) {
-        initializeUserTasksForTomorrow()
-        showNotification()
-    }
-
-    private fun initializeUserTasksForTomorrow() {
-        val dynamoDb = DatabaseManager(this)
-
-        val taskInitializer = UserTaskInitializer(
-            TaskDetailsRepository(dynamoDb),
-            UserTaskRepository(dynamoDb),
-            ::initializeTasksCallback
-        )
-        taskInitializer.initializeUserTasks(false)
-    }
-
-    private fun initializeTasksCallback(wasSuccessful: Boolean) {
-        // TODO Do sth
-    }
-
-    private fun showNotification() {
-        createChannel()
-        buildNotification()
-        with(NotificationManagerCompat.from(this)) {
-            notify(NOTIFICATION_ID, notification)
-        }
-    }
-
-    private fun buildNotification() {
+    private fun buildNotification(taskDetails: TaskDetails): Notification {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        val taskId = "task_id"
-
-        // TODO connect with DB and get not completed task
-        val activityId = 33
-        val activityDescription = "-> Zrób 10 przysiadów <-"
-
         val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
-            putExtra(taskId, activityId.toString())
+            putExtra(EXTRA_UNCOMPLETED_TASK, taskDetails)
         }
         val buttonPendingIntent = PendingIntent.getBroadcast(this, 0, buttonIntent, 0)
 
-        val builder = NotificationCompat.Builder(
+        return NotificationCompat.Builder(
             this, CHANNEL_ID
         ).apply {
-            setSmallIcon(R.drawable.notify_heart)
+            setSmallIcon(R.drawable.ic_notification)
             setContentIntent(pendingIntent)
             setContentTitle(getString(R.string.task_notify_title))
-            setContentText(activityDescription)
+            setContentText(taskDetails.description)
             setAutoCancel(true)
             priority = NotificationCompat.PRIORITY_DEFAULT
             addAction(
-                R.drawable.notify_heart, getString(R.string.notify_button),
+                R.drawable.ic_notification, getString(R.string.notify_button),
                 buttonPendingIntent
             )
-        }
-        notification = builder.build()
-        startForeground(1, notification)
+        }.build()
     }
 }
