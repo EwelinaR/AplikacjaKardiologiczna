@@ -7,18 +7,22 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.github.aplikacjakardiologiczna.R
-import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
+import com.github.aplikacjakardiologiczna.model.database.Result
+import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import java.util.Calendar
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+
 
 class CheckTaskNotificationReceiver : BroadcastReceiver(), CoroutineScope {
 
     companion object {
-        private const val TASK_TAG = "TASK"
+        private const val TAG = "CHECK_TASK_RECEIVER"
     }
 
     override val coroutineContext: CoroutineContext
@@ -29,23 +33,27 @@ class CheckTaskNotificationReceiver : BroadcastReceiver(), CoroutineScope {
             if (it.containsKey(NotificationService.EXTRA_UNCOMPLETED_TASK)) {
                 val uncompletedTask =
                     intent.getSerializableExtra(NotificationService.EXTRA_UNCOMPLETED_TASK) as UserTask
-                Log.i(TASK_TAG, "User completed task by clicking on notification button.")
-                Toast.makeText(context, R.string.completed_task_toast, Toast.LENGTH_SHORT).show()
+                completeTask(context, uncompletedTask)
+            }
 
-                uncompletedTask.time = Calendar.getInstance().time.toString()
-
-                /*
-                        val task = userInfo.userTasks[position]
-        task.let {
-            task.time = if (isChecked) Calendar.getInstance().time.toString() else null
-            updateUserTask(task, itemView)
-        }
-                 */
+            with(NotificationManagerCompat.from(context)) {
+                cancel(NotificationService.NOTIFICATION_ID)
             }
         }
+    }
 
-        with(NotificationManagerCompat.from(context)) {
-            cancel(NotificationService.NOTIFICATION_ID)
+    private fun completeTask(context: Context, userTask: UserTask) {
+        val userTaskRepository = UserTaskRepository(DatabaseManager(context))
+
+        launch {
+            if (userTaskRepository.completeUserTask(userTask.index) is Result.Success) {
+                withContext(Dispatchers.Main) {
+                    Log.i(TAG, "User completed task with index ${userTask.index} by clicking on notification button.")
+                    Toast.makeText(context, R.string.completed_task_toast, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
     }
+
 }

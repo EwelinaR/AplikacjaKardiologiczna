@@ -44,7 +44,7 @@ class AlarmNotificationReceiver : BroadcastReceiver(), CoroutineScope {
             when (val result = userTaskRepository.getUserInfo()) {
                 is Result.Success<UserInfo> -> {
                     val uncompletedTasks = result.data.userTasks.filter { it.time.isNullOrEmpty() }
-                    uncompletedTasks.isNotEmpty().let {
+                    if (uncompletedTasks.isNotEmpty()) {
                         val uncompletedRandomTask = uncompletedTasks.random()
                         getUncompletedTaskDetails(result.data.group, uncompletedRandomTask)
                     }

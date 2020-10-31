@@ -39,15 +39,15 @@ class NotificationUtils(private val activity: Activity) {
         val pendingIntent = createPendingIntent(PendingIntent.FLAG_CANCEL_CURRENT)
 
         // for tests: run notification after a few seconds
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            SystemClock.elapsedRealtime() + 1000*10,
-            10000,
-            pendingIntent)
+//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+//            SystemClock.elapsedRealtime() + 1000*10,
+//            10000,
+//            pendingIntent)
 
-//        alarmManager.setRepeating(
-//            AlarmManager.RTC_WAKEUP, notificationTime.timeInMillis,
-//            AlarmManager.INTERVAL_DAY, pendingIntent
-//        )
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, notificationTime.timeInMillis,
+            AlarmManager.INTERVAL_DAY, pendingIntent
+        )
     }
 
     private fun createPendingIntent(flagCancelCurrent: Int): PendingIntent? {

@@ -15,7 +15,6 @@ import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
-import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
@@ -53,7 +52,7 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
     }
 
     private fun initializeTasksCallback(wasSuccessful: Boolean) {
-        // TODO Do sth
+        // Do nothing
     }
 
     private fun showNotification(uncompletedUserTask: UserTask) {
@@ -90,10 +89,12 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
         val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
             putExtra(EXTRA_UNCOMPLETED_TASK, uncompletedUserTask)
         }
-        val buttonPendingIntent = PendingIntent.getBroadcast(this, 0, buttonIntent, 0)
+        val buttonPendingIntent =
+            PendingIntent.getBroadcast(this, 0, buttonIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         return NotificationCompat.Builder(
             this, CHANNEL_ID

@@ -9,10 +9,7 @@ import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFo
 import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.google.gson.Gson
-import java.text.DateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class DatabaseManager constructor(context: Context) {
 
@@ -25,9 +22,7 @@ class DatabaseManager constructor(context: Context) {
 
     private fun getTodaysDate(): String = Calendar.getInstance().now.polishDateFormat
 
-
     private fun getTodaysTime(): String = Calendar.getInstance().now.polishTimeFormat
-
 
     fun markTaskAsCompleted(taskId: Int) {
         databaseAccess.writeTimeOfTask(taskId, getTodaysDate(), getTodaysTime(), NICK)

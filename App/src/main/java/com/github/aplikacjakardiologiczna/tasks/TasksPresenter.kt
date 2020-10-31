@@ -1,5 +1,7 @@
 package com.github.aplikacjakardiologiczna.tasks
 
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.now
+import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFormat
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.converter.CategoryConverter
@@ -62,8 +64,8 @@ class TasksPresenter(
     ) {
         val task = userInfo.userTasks[position]
         task.let {
-            task.time = if (isChecked) Calendar.getInstance().time.toString() else null
-            updateUserTask(task, itemView)
+            task.time = if (isChecked) Calendar.getInstance().now.polishTimeFormat else null
+            completeUserTask(task, itemView)
         }
     }
 
@@ -112,17 +114,17 @@ class TasksPresenter(
         }
     }
 
-    private fun updateUserTask(task: UserTask, itemView: TasksContract.TaskItemView): Job = launch {
+    private fun completeUserTask(task: UserTask, itemView: TasksContract.TaskItemView): Job = launch {
         val dbPosition = task.index
-        when (dbPosition.let { userTaskRepository.updateUserTask(it) }) {
-            is Result.Success -> onUserTaskUpdated(task, itemView)
+        when (dbPosition.let { userTaskRepository.completeUserTask(it) }) {
+            is Result.Success -> onUserTaskCompleted(task, itemView)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong
             }
         }
     }
 
-    private fun onUserTaskUpdated(task: UserTask, itemView: TasksContract.TaskItemView) {
+    private fun onUserTaskCompleted(task: UserTask, itemView: TasksContract.TaskItemView) {
         val isTaskCompleted = task.time != null
         itemView.crossOffTask(isTaskCompleted)
         val moveTo = if (isTaskCompleted) (userInfo.userTasks.size - 1) else 0
