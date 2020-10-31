@@ -8,6 +8,7 @@ import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
+import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +46,7 @@ class AlarmNotificationReceiver : BroadcastReceiver(), CoroutineScope {
                     val uncompletedTasks = result.data.userTasks.filter { it.time.isNullOrEmpty() }
                     uncompletedTasks.isNotEmpty().let {
                         val uncompletedRandomTask = uncompletedTasks.random()
-                        getUncompletedTaskDetails(result.data.group, uncompletedRandomTask.id)
+                        getUncompletedTaskDetails(result.data.group, uncompletedRandomTask)
                     }
                 }
                 else -> startNotificationService()
@@ -53,20 +54,24 @@ class AlarmNotificationReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun getUncompletedTaskDetails(group: String, taskId: Int): Job = launch {
-        when (val result = taskDetailsRepository.getTasksDetails(group, listOf(taskId))) {
+    private fun getUncompletedTaskDetails(group: String, task: UserTask): Job = launch {
+        when (val result = taskDetailsRepository.getTasksDetails(group, listOf(task.id))) {
             is Result.Success<List<TaskDetails>> -> {
                 result.data.isNotEmpty().let {
-                    startNotificationService(result.data[0])
+                    task.taskDetails = result.data[0]
+                    startNotificationService(task)
                 }
             }
             else -> startNotificationService()
         }
     }
 
-    private fun startNotificationService(taskDetails: TaskDetails? = null) {
+    private fun startNotificationService(userTask: UserTask? = null) {
         val service = Intent(context, NotificationService::class.java)
-            .putExtra(NotificationService.EXTRA_UNCOMPLETED_TASK, taskDetails)
+
+        userTask?.let {
+            service.putExtra(NotificationService.EXTRA_UNCOMPLETED_TASK, userTask)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(Intent(service))

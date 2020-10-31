@@ -3,10 +3,14 @@ package com.github.aplikacjakardiologiczna.model.database.dynamodb
 import android.content.Context
 import android.util.Log
 import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.now
+import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishDateFormat
+import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFormat
 import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.google.gson.Gson
 import java.text.DateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -19,16 +23,11 @@ class DatabaseManager constructor(context: Context) {
 
     private val databaseAccess = DatabaseAccess(context)
 
-    private fun getTodaysDate(): String {
-        val poland = Locale("pl","PL","PL")
-        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, poland)
-        return dateFormat.format(Date())
-    }
+    private fun getTodaysDate(): String = Calendar.getInstance().now.polishDateFormat
 
-    private fun getTodaysTime(): String {
-        val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT)
-        return timeFormat.format(Date())
-    }
+
+    private fun getTodaysTime(): String = Calendar.getInstance().now.polishTimeFormat
+
 
     fun markTaskAsCompleted(taskId: Int) {
         databaseAccess.writeTimeOfTask(taskId, getTodaysDate(), getTodaysTime(), NICK)

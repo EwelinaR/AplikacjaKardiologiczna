@@ -6,14 +6,17 @@ import java.util.Date
 
 object CalendarExtensions {
 
-    val Calendar.tomorrow: Date
+    val Calendar.startOfTomorrow: Date
         get() {
             add(Calendar.DAY_OF_YEAR, 1)
             return atStartOfDay(time)
         }
 
-    val Calendar.today: Date
+    val Calendar.startOfToday: Date
         get() = atStartOfDay(time)
+
+    val Calendar.now: Date
+        get() = time
 
     private fun Calendar.atStartOfDay(date: Date): Date =
         this.apply {

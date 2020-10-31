@@ -16,6 +16,7 @@ import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
+import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 
@@ -34,7 +35,7 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
         intent?.extras?.let {
             if (it.containsKey(EXTRA_UNCOMPLETED_TASK)) {
                 val uncompletedTask =
-                    intent.getSerializableExtra(EXTRA_UNCOMPLETED_TASK) as TaskDetails
+                    intent.getSerializableExtra(EXTRA_UNCOMPLETED_TASK) as UserTask
                 showNotification(uncompletedTask)
             }
         }
@@ -55,9 +56,9 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
         // TODO Do sth
     }
 
-    private fun showNotification(taskDetails: TaskDetails) {
+    private fun showNotification(uncompletedUserTask: UserTask) {
         createChannel()
-        val notification = buildNotification(taskDetails)
+        val notification = buildNotification(uncompletedUserTask)
         startForeground(1, notification)
         with(NotificationManagerCompat.from(this)) {
             notify(NOTIFICATION_ID, notification)
@@ -84,13 +85,13 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
         }
     }
 
-    private fun buildNotification(taskDetails: TaskDetails): Notification {
+    private fun buildNotification(uncompletedUserTask: UserTask): Notification {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
-            putExtra(EXTRA_UNCOMPLETED_TASK, taskDetails)
+            putExtra(EXTRA_UNCOMPLETED_TASK, uncompletedUserTask)
         }
         val buttonPendingIntent = PendingIntent.getBroadcast(this, 0, buttonIntent, 0)
 
@@ -100,7 +101,7 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
             setSmallIcon(R.drawable.ic_notification)
             setContentIntent(pendingIntent)
             setContentTitle(getString(R.string.task_notify_title))
-            setContentText(taskDetails.description)
+            setContentText(uncompletedUserTask.taskDetails?.description)
             setAutoCancel(true)
             priority = NotificationCompat.PRIORITY_DEFAULT
             addAction(
