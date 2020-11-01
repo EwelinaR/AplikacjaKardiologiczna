@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.aplikacjakardiologiczna.AppSettings
-import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.login.LoginActivity
+import com.github.aplikacjakardiologiczna.main.MainActivity
 
 class LauncherActivity : AppCompatActivity(), LauncherContract.View {
     private lateinit var presenter: LauncherContract.Presenter

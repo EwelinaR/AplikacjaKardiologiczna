@@ -1,8 +1,9 @@
 package com.github.aplikacjakardiologiczna.model.database
 
 import com.github.aplikacjakardiologiczna.AppConstants
-import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.today
-import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.tomorrow
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.startOfToday
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.startOfTomorrow
+import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishDateFormat
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
@@ -11,9 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.util.Calendar
-import java.util.Locale
 import kotlin.coroutines.CoroutineContext
 
 class UserTaskInitializer(
@@ -40,11 +39,9 @@ class UserTaskInitializer(
         val numberOfTasks = if (tasks.size < AppConstants.TASKS_PER_DAY) tasks.size else AppConstants.TASKS_PER_DAY
         val randomTasks = tasks.shuffled().subList(0, numberOfTasks)
 
-        val poland = Locale("pl","PL","PL")
-        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, poland)
         val calendar = Calendar.getInstance()
-        val startDate = if (forToday) calendar.today else calendar.tomorrow
-        val formattedDate = dateFormat.format(startDate.time)
+        val startDate = if (forToday) calendar.startOfToday else calendar.startOfTomorrow
+        val formattedDate = startDate.polishDateFormat
 
         insertUserTasks(randomTasks, formattedDate)
     }

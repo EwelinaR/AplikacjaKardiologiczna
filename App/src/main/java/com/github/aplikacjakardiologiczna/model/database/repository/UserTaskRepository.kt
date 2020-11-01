@@ -31,7 +31,7 @@ class UserTaskRepository(private val databaseManager: DatabaseManager) {
             }
         }
 
-    suspend fun updateUserTask(id: Int): Result<Unit> = withContext(ioDispatcher) {
+    suspend fun completeUserTask(id: Int): Result<Unit> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(databaseManager.markTaskAsCompleted(id))
         } catch (e: Exception) {
