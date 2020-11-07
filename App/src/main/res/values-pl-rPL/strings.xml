@@ -4,7 +4,7 @@
     <string name="all_heart">Serce</string>
     <string name="all_tasks">Zadania</string>
     <string name="completed_task_toast">Gratuluję, zadanie wykonane!</string>
-    <string name="task_notify_title">Masz niewykonane zadania na dzisiaj</string>
+    <string name="task_notify_title">Masz niewykonane zadanie na dzisiaj</string>
     <string name="notify_button">Zrobione!</string>
     <string name="app_slogan">Przyszły slogan naszej aplikacji</string>
     <string name="category_exercise">ćwiczenia fizyczne</string>
@@ -20,5 +20,5 @@
     <string name="notification_description">Przypomnienie o niewykonanych zadaniach</string>
     <string name="all_logout">Wyloguj</string>
     <string name="generic_error_message">Coś poszło nie tak. Spróbuj ponownie.</string>
-    <string name="no_tasks_message">Ukończyłeś wszystkie zadania lub wystąpił problem podczas ładowania. Możesz przesunąć w dół, aby odświeżyć.</string>
+    <string name="no_tasks_message">Wystąpił problem podczas ładowania zadań. Możesz przesunąć w dół, aby odświeżyć.</string>
 </resources>

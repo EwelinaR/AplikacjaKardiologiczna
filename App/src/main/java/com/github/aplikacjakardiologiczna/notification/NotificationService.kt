@@ -88,9 +88,10 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
 
     private fun buildNotification(uncompletedUserTask: UserTask): Notification {
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+            putExtra(MainActivity.EXTRA_SHOW_TASKS, true)
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         val buttonIntent = Intent(this, CheckTaskNotificationReceiver::class.java).apply {
             putExtra(EXTRA_UNCOMPLETED_TASK, uncompletedUserTask)

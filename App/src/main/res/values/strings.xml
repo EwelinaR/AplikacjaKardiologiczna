@@ -3,7 +3,7 @@
     <string name="all_heart">Heart</string>
     <string name="all_tasks">Tasks</string>
     <string name="completed_task_toast">Congratulations, task completed!</string>
-    <string name="task_notify_title">You have not completed tasks</string>
+    <string name="task_notify_title">You have not completed task</string>
     <string name="notify_button">Done!</string>
     <string name="app_slogan">Future slogan of our app</string>
     <string name="category_exercise">physical exercises</string>
@@ -19,5 +19,5 @@
     <string name="notification_description">Reminder about uncompleted tasks</string>
     <string name="all_logout">Logout</string>
     <string name="generic_error_message">Something went wrong. Please try again.</string>
-    <string name="no_tasks_message">You have completed all tasks or a problem occurred when loading. You can swipe down to refresh.</string>
+    <string name="no_tasks_message">There was a problem with loading the tasks for today. You can swipe down to refresh.</string>
 </resources>

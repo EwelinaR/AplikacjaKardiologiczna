@@ -54,8 +54,11 @@ class TasksFragment : Fragment(), TasksContract.View {
         recycler_view_tasks.adapter = TasksAdapter(presenter)
 
         swipe_refresh_layout_tasks.setOnRefreshListener { presenter.loadTasks() }
+    }
 
+    override fun onResume() {
         presenter.loadTasks()
+        super.onResume()
     }
 
     override fun onTasksLoaded() {

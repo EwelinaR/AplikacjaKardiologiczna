@@ -11,9 +11,6 @@ import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
 import com.github.aplikacjakardiologiczna.login.LoginActivity
-import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
-import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import com.github.aplikacjakardiologiczna.tasks.TasksFragment
 import kotlinx.android.synthetic.main.activity_main.bottom_navigation
@@ -21,6 +18,10 @@ import kotlinx.android.synthetic.main.activity_main.drawer_layout
 import kotlinx.android.synthetic.main.activity_main.drawer_navigation
 
 class MainActivity : AppCompatActivity(), MainContract.View {
+
+    companion object {
+        const val EXTRA_SHOW_TASKS = "EXTRA_SHOW_TASKS"
+    }
 
     private lateinit var presenter: MainContract.Presenter
     private lateinit var toggle: ActionBarDrawerToggle
@@ -31,21 +32,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dynamoDb = DatabaseManager(this)
-
         setPresenter(
             MainPresenter(
                 this,
                 AppSettings(this),
-                TaskDetailsRepository(dynamoDb),
-                UserTaskRepository(dynamoDb)
+                NotificationUtils(this)
             )
         )
         presenter.onViewCreated()
-
-        val notify = NotificationUtils(this)
-        if (!notify.isAlarmUp())
-            notify.setAlarm()
 
         setupBottomNavigation()
         setupDrawerNavigation()
@@ -54,6 +48,16 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     override fun onDestroy() {
         presenter.onDestroy()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        intent.extras?.let {
+            if (it.containsKey(EXTRA_SHOW_TASKS)) {
+                val shouldShowTasks = intent.getBooleanExtra(EXTRA_SHOW_TASKS, false)
+                if (shouldShowTasks) bottom_navigation.selectedItemId = R.id.navigation_tasks
+            }
+        }
+        super.onResume()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

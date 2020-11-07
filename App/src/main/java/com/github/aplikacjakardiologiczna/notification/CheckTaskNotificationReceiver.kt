@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.github.aplikacjakardiologiczna.R
+import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
@@ -51,6 +52,13 @@ class CheckTaskNotificationReceiver : BroadcastReceiver(), CoroutineScope {
                     Log.i(TAG, "User completed task with index ${userTask.index} by clicking on notification button.")
                     Toast.makeText(context, R.string.completed_task_toast, Toast.LENGTH_SHORT)
                         .show()
+
+                    val intent = Intent(context, MainActivity::class.java).apply {
+                        flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                        putExtra(MainActivity.EXTRA_SHOW_TASKS, true)
+                    }
+                    context.startActivity(intent)
                 }
             }
         }

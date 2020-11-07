@@ -1,8 +1,7 @@
 package com.github.aplikacjakardiologiczna.main
 
 import com.github.aplikacjakardiologiczna.AppSettings
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
-import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
+import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,8 +10,7 @@ import kotlin.coroutines.CoroutineContext
 class MainPresenter(
     view: MainContract.View,
     private val settings: AppSettings,
-    private val taskDetailsRepository: TaskDetailsRepository,
-    private val userTaskRepository: UserTaskRepository,
+    private val notificationUtils: NotificationUtils,
     private val uiContext: CoroutineContext = Dispatchers.Main
 ) : MainContract.Presenter, CoroutineScope {
 
@@ -23,7 +21,13 @@ class MainPresenter(
         get() = uiContext + job
 
     override fun onViewCreated() {
-        view?.showHeartView()
+        if (settings.username != null && settings.group != null) {
+            view?.showHeartView()
+            if (!notificationUtils.isAlarmUp())
+                notificationUtils.setAlarm()
+        } else {
+            logout()
+        }
     }
 
     override fun onHeartTabClicked() {
@@ -37,6 +41,9 @@ class MainPresenter(
     override fun logout() {
         settings.username = null
         settings.group = null
+
+        if (notificationUtils.isAlarmUp())
+            notificationUtils.cancelAlarm()
 
         view?.showLogin()
     }
