@@ -18,4 +18,5 @@
     <string name="wrong_username_validation_message">Błędny login.</string>
     <string name="notification_name">Niewykonane zadania</string>
     <string name="notification_description">Przypomnienie o niewykonanych zadaniach</string>
+    <string name="all_logout">Wyloguj</string>
 </resources>

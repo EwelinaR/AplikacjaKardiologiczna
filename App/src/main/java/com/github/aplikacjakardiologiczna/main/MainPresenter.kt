@@ -39,6 +39,13 @@ class MainPresenter(
         view?.showTasksView()
     }
 
+    override fun logout() {
+        settings.username = null
+        settings.group = null
+
+        view?.showLogin()
+    }
+
     override fun onDestroy() {
         this.view = null
     }

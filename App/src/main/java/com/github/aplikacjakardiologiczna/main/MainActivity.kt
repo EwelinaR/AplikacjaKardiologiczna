@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.heart.HeartFragment
+import com.github.aplikacjakardiologiczna.login.LoginActivity
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
@@ -69,6 +71,13 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         showFragment(tasksFragment)
     }
 
+    override fun showLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+    }
+
     override fun setPresenter(presenter: MainContract.Presenter) {
         this.presenter = presenter
     }
@@ -105,11 +114,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         drawer_navigation.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.navigation_heart -> {
-                    presenter.onHeartTabClicked()
-                }
-                R.id.navigation_tasks -> {
-                    presenter.onTasksTabClicked()
+                R.id.navigation_logout -> {
+                    presenter.logout()
                 }
             }
             drawer_layout?.closeDrawer(GravityCompat.START)

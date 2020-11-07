@@ -17,4 +17,5 @@
     <string name="wrong_username_validation_message">Wrong username.</string>
     <string name="notification_name">Uncompleted tasks</string>
     <string name="notification_description">Reminder about uncompleted tasks</string>
+    <string name="all_logout">Logout</string>
 </resources>
