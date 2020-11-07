@@ -19,4 +19,5 @@
     <string name="notification_description">Reminder about uncompleted tasks</string>
     <string name="all_logout">Logout</string>
     <string name="generic_error_message">Something went wrong. Please try again.</string>
+    <string name="no_tasks_message">You have completed all tasks or a problem occurred when loading. You can swipe down to refresh.</string>
 </resources>

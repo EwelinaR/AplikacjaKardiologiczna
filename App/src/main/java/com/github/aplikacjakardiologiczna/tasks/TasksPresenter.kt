@@ -37,6 +37,7 @@ class TasksPresenter(
         get() = uiContext + job
 
     override fun loadTasks() {
+        view?.showLoading(true)
         getUserInfo()
     }
 
@@ -46,8 +47,8 @@ class TasksPresenter(
     override fun onBindTasksAtPosition(position: Int, itemView: TasksContract.TaskItemView) {
         val task = userInfo.userTasks[position]
         task.taskDetails?.category?.let {
-            CategoryConverter.toCategory(it)?.let {
-                    it1 -> itemView.setImage(it1)
+            CategoryConverter.toCategory(it)?.let { it1 ->
+                itemView.setImage(it1)
             }
         }
         task.taskDetails?.let {
@@ -84,11 +85,7 @@ class TasksPresenter(
             is Result.Error -> {
                 if (!tasksSuccessfullyInitialized) {
                     initializeUserTasksForToday()
-                } else {
-                    withContext(Dispatchers.Main) {
-                        view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
-                    }
-                }
+                } else handleTasksLoadingError()
             }
         }
     }
@@ -113,21 +110,22 @@ class TasksPresenter(
     private fun getTasksDetails(ids: List<Int>): Job = launch {
         when (val result = taskDetailsRepository.getTasksDetails(ids)) {
             is Result.Success<List<TaskDetails>> -> onTasksForTodayLoaded(result.data)
-            is Result.Error -> {
-                view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
-            }
+            is Result.Error -> handleTasksLoadingError()
         }
     }
 
-    private fun completeUserTask(task: UserTask, itemView: TasksContract.TaskItemView): Job = launch {
-        val dbPosition = task.index
-        when (dbPosition.let { userTaskRepository.completeUserTask(it) }) {
-            is Result.Success -> onUserTaskCompleted(task, itemView)
-            is Result.Error -> {
-                view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
+    private fun completeUserTask(task: UserTask, itemView: TasksContract.TaskItemView): Job =
+        launch {
+            val dbPosition = task.index
+            when (dbPosition.let { userTaskRepository.completeUserTask(it) }) {
+                is Result.Success -> onUserTaskCompleted(task, itemView)
+                is Result.Error -> {
+                    withContext(Dispatchers.Main) {
+                        view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
+                    }
+                }
             }
         }
-    }
 
     private fun onUserTaskCompleted(task: UserTask, itemView: TasksContract.TaskItemView) {
         val isTaskCompleted = task.time != null
@@ -147,6 +145,8 @@ class TasksPresenter(
         }
         userInfo.userTasks.sortBy { it.time }
         view?.onTasksLoaded()
+        view?.showLoading(false)
+        view?.showTasks()
     }
 
     private fun moveTask(userTask: UserTask, to: Int) {
@@ -155,5 +155,11 @@ class TasksPresenter(
         userInfo.userTasks.add(to, userTask)
 
         view?.onTaskMoved(position, to)
+    }
+
+    private fun handleTasksLoadingError() {
+        view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
+        view?.showLoading(false)
+        view?.showNoTasks()
     }
 }

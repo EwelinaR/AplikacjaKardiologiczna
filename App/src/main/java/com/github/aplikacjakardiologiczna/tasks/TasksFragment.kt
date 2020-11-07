@@ -16,6 +16,8 @@ import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepo
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_tasks.frame_layout_tasks
 import kotlinx.android.synthetic.main.fragment_tasks.recycler_view_tasks
+import kotlinx.android.synthetic.main.fragment_tasks.swipe_refresh_layout_tasks
+import kotlinx.android.synthetic.main.fragment_tasks.text_view_no_tasks
 
 
 class TasksFragment : Fragment(), TasksContract.View {
@@ -51,11 +53,23 @@ class TasksFragment : Fragment(), TasksContract.View {
             LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         recycler_view_tasks.adapter = TasksAdapter(presenter)
 
+        swipe_refresh_layout_tasks.setOnRefreshListener { presenter.loadTasks() }
+
         presenter.loadTasks()
     }
 
     override fun onTasksLoaded() {
         recycler_view_tasks.adapter?.notifyDataSetChanged()
+    }
+
+    override fun showNoTasks() {
+        text_view_no_tasks.visibility = View.VISIBLE
+        recycler_view_tasks.visibility = View.GONE
+    }
+
+    override fun showTasks() {
+        text_view_no_tasks.visibility = View.GONE
+        recycler_view_tasks.visibility = View.VISIBLE
     }
 
     override fun onTaskMoved(from: Int, to: Int) {
@@ -66,6 +80,10 @@ class TasksFragment : Fragment(), TasksContract.View {
         Snackbar
             .make(frame_layout_tasks, message.stringResourceId, Snackbar.LENGTH_LONG)
             .show()
+    }
+
+    override fun showLoading(isLoading: Boolean) {
+        swipe_refresh_layout_tasks.isRefreshing = isLoading
     }
 
     override fun setPresenter(presenter: TasksContract.Presenter) {
