@@ -1,7 +1,7 @@
 package com.github.aplikacjakardiologiczna.login
 
 import com.github.aplikacjakardiologiczna.AppSettings
-import com.github.aplikacjakardiologiczna.model.ErrorMessage
+import com.github.aplikacjakardiologiczna.model.Message
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +27,7 @@ class LoginPresenter(
         if (username.isNotEmpty()) {
             checkUser(username)
         } else {
-            view?.showValidationError(ErrorMessage.VALIDATION_ERROR_EMPTY_USERNAME)
+            view?.showValidationError(Message.VALIDATION_ERROR_EMPTY_USERNAME)
         }
     }
 
@@ -35,7 +35,7 @@ class LoginPresenter(
         when (val result = userTaskRepository.getUserGroup(username)) {
             is Result.Success<String> -> successfullyLoggedIn(username, result.data)
             is Result.Error -> {
-                view?.showValidationError(ErrorMessage.VALIDATION_ERROR_WRONG_USERNAME)
+                view?.showValidationError(Message.VALIDATION_ERROR_WRONG_USERNAME)
             }
         }
     }

@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
+import com.github.aplikacjakardiologiczna.model.Message
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_tasks.frame_layout_tasks
 import kotlinx.android.synthetic.main.fragment_tasks.recycler_view_tasks
 
 
@@ -24,22 +27,28 @@ class TasksFragment : Fragment(), TasksContract.View {
 
         val dynamoDb = DatabaseManager(requireContext())
 
-        setPresenter(TasksPresenter(this,
+        setPresenter(
+            TasksPresenter(
+                this,
                 AppSettings(this.requireContext()),
                 TaskDetailsRepository(dynamoDb),
                 UserTaskRepository(dynamoDb)
-        ))
+            )
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_tasks, container, false)
     }
 
     override fun onStart() {
         super.onStart()
 
-        recycler_view_tasks.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        recycler_view_tasks.layoutManager =
+            LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         recycler_view_tasks.adapter = TasksAdapter(presenter)
 
         presenter.loadTasks()
@@ -51,6 +60,12 @@ class TasksFragment : Fragment(), TasksContract.View {
 
     override fun onTaskMoved(from: Int, to: Int) {
         recycler_view_tasks.adapter?.notifyItemMoved(from, to)
+    }
+
+    override fun showMessage(message: Message) {
+        Snackbar
+            .make(frame_layout_tasks, message.stringResourceId, Snackbar.LENGTH_LONG)
+            .show()
     }
 
     override fun setPresenter(presenter: TasksContract.Presenter) {

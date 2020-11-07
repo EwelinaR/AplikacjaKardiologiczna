@@ -3,6 +3,7 @@ package com.github.aplikacjakardiologiczna.tasks
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.now
 import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFormat
+import com.github.aplikacjakardiologiczna.model.Message
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.converter.CategoryConverter
@@ -15,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
@@ -83,7 +85,9 @@ class TasksPresenter(
                 if (!tasksSuccessfullyInitialized) {
                     initializeUserTasksForToday()
                 } else {
-                    //TODO Show a snackbar/toast saying that something went wrong
+                    withContext(Dispatchers.Main) {
+                        view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
+                    }
                 }
             }
         }
@@ -103,8 +107,6 @@ class TasksPresenter(
         if (wasSuccessful) {
             tasksSuccessfullyInitialized = true
             getUserInfo()
-        } else {
-            //TODO Show a snackbar/toast saying that something went wrong
         }
     }
 
@@ -112,7 +114,7 @@ class TasksPresenter(
         when (val result = taskDetailsRepository.getTasksDetails(ids)) {
             is Result.Success<List<TaskDetails>> -> onTasksForTodayLoaded(result.data)
             is Result.Error -> {
-                //TODO Show a snackbar/toast saying that something went wrong
+                view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
             }
         }
     }
@@ -122,7 +124,7 @@ class TasksPresenter(
         when (dbPosition.let { userTaskRepository.completeUserTask(it) }) {
             is Result.Success -> onUserTaskCompleted(task, itemView)
             is Result.Error -> {
-                //TODO Show a snackbar/toast saying that something went wrong
+                view?.showMessage(Message.GENERIC_ERROR_MESSAGE)
             }
         }
     }

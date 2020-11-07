@@ -7,7 +7,7 @@ import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.extensions.ViewExtensions.hideKeyboard
 import com.github.aplikacjakardiologiczna.main.MainActivity
-import com.github.aplikacjakardiologiczna.model.ErrorMessage
+import com.github.aplikacjakardiologiczna.model.Message
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.google.android.material.snackbar.Snackbar
@@ -47,9 +47,9 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         finish()
     }
 
-    override fun showValidationError(errorMessage: ErrorMessage) {
+    override fun showValidationError(message: Message) {
         Snackbar
-            .make(linearLayoutLogin, errorMessage.stringResourceId, Snackbar.LENGTH_LONG)
+            .make(linearLayoutLogin, message.stringResourceId, Snackbar.LENGTH_LONG)
             .show()
     }
 

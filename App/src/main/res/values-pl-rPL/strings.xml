@@ -19,4 +19,5 @@
     <string name="notification_name">Niewykonane zadania</string>
     <string name="notification_description">Przypomnienie o niewykonanych zadaniach</string>
     <string name="all_logout">Wyloguj</string>
+    <string name="generic_error_message">Coś poszło nie tak. Spróbuj ponownie.</string>
 </resources>
