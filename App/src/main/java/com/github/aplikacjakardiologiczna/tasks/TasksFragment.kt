@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
@@ -24,6 +25,7 @@ class TasksFragment : Fragment(), TasksContract.View {
         val dynamoDb = DatabaseManager(requireContext())
 
         setPresenter(TasksPresenter(this,
+                AppSettings(this.requireContext()),
                 TaskDetailsRepository(dynamoDb),
                 UserTaskRepository(dynamoDb)
         ))

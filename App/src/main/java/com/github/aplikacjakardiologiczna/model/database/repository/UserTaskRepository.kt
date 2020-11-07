@@ -39,4 +39,13 @@ class UserTaskRepository(private val databaseManager: DatabaseManager) {
             Result.Error(e)
         }
     }
+
+    suspend fun getUserGroup(username: String): Result<String> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(databaseManager.getUserGroup(username))
+        } catch (e: Exception) {
+            Log.e("error", "getUserGroup() failed", e)
+            Result.Error(e)
+        }
+    }
 }

@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
@@ -46,6 +47,7 @@ class NotificationService : IntentService(NOTIFICATION_SERVICE_NAME) {
         val taskInitializer = UserTaskInitializer(
             TaskDetailsRepository(dynamoDb),
             UserTaskRepository(dynamoDb),
+            AppSettings(this),
             ::initializeTasksCallback
         )
         taskInitializer.initializeUserTasks(false)

@@ -47,6 +47,7 @@ class MainPresenter(
         val taskInitializer = UserTaskInitializer(
             taskDetailsRepository,
             userTaskRepository,
+            settings,
             ::initializeFirstUserTasksCallback
         )
         taskInitializer.initializeUserTasks(true)

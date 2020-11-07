@@ -57,6 +57,20 @@ class DatabaseAccess constructor(private val context: Context) {
         )
     }
 
+    fun readUserFromDatabase(username: String): ScanResult {
+        val client = getDatabaseClient()
+
+        val attributeValues: MutableMap<String, AttributeValue> = HashMap()
+        attributeValues[":val"] = AttributeValue().withS(username)
+
+        val scanRequest = ScanRequest()
+            .withTableName(DynamoDBHelper.USER_TABLE_NAME)
+            .withFilterExpression("nick = :val")
+            .withExpressionAttributeValues(attributeValues)
+
+        return client.scan(scanRequest)
+    }
+
     fun readTasksFromDatabase(group: String): ScanResult {
         val client = getDatabaseClient()
 
