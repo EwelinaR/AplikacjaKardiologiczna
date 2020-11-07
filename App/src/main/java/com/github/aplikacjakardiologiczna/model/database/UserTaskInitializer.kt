@@ -1,6 +1,7 @@
 package com.github.aplikacjakardiologiczna.model.database
 
 import com.github.aplikacjakardiologiczna.AppConstants
+import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.startOfToday
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.startOfTomorrow
 import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishDateFormat
@@ -18,18 +19,17 @@ import kotlin.coroutines.CoroutineContext
 class UserTaskInitializer(
     private val taskDetailsRepository: TaskDetailsRepository,
     private val userTaskRepository: UserTaskRepository,
+    private val settings: AppSettings,
     private val callback: (Boolean) -> Unit
 ) : CoroutineScope {
 
     private var job: Job = Job()
-    private val nick = "TEST"
-    private val group = "A"
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
 
     fun initializeUserTasks(forToday: Boolean): Job = launch {
-        when (val result = taskDetailsRepository.getTasksFromGroup(group)) {
+        when (val result = taskDetailsRepository.getTasksFromGroup()) {
             is Result.Success<List<Int>> -> onTasksLoaded(result.data, forToday)
             is Result.Error -> callback(false)
         }
@@ -51,7 +51,7 @@ class UserTaskInitializer(
         taskIds.mapIndexedTo (userTasks, {
                 index, taskId -> UserTask(taskId, index, null, null)
         })
-        val userInfo = UserInfo(nick, group, startDate, userTasks)
+        val userInfo = UserInfo(settings.username!!, settings.group!!, startDate, userTasks)
 
         val result = userTaskRepository.insertUserTasks(userInfo)
         callback(result is Result.Success<Unit>)

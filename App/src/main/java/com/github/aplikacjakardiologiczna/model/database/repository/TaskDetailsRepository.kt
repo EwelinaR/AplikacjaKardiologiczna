@@ -12,20 +12,20 @@ class TaskDetailsRepository(private val databaseManager: DatabaseManager) {
 
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
-    suspend fun getTasksDetails(group: String, ids: List<Int>): Result<List<TaskDetails>> =
+    suspend fun getTasksDetails(ids: List<Int>): Result<List<TaskDetails>> =
         withContext(ioDispatcher) {
             return@withContext try {
-                Result.Success(databaseManager.getTasksDetails(group, ids))
+                Result.Success(databaseManager.getTasksDetails(ids))
             } catch (e: Exception) {
                 Log.e("error", "getTasksDetails() failed", e)
                 Result.Error(e)
             }
         }
 
-    suspend fun getTasksFromGroup(group: String): Result<List<Int>> =
+    suspend fun getTasksFromGroup(): Result<List<Int>> =
         withContext(ioDispatcher) {
             return@withContext try {
-                Result.Success(databaseManager.getTaskIdsFromGroup(group))
+                Result.Success(databaseManager.getTaskIdsFromGroup())
             } catch (e: Exception) {
                 Log.e("error", "getTasksFromGroup() failed", e)
                 Result.Error(e)

@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.tasks
 
+import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.now
 import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFormat
 import com.github.aplikacjakardiologiczna.model.database.Result
@@ -19,6 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 class TasksPresenter(
     view: TasksContract.View,
+    private val settings: AppSettings,
     private val taskDetailsRepository: TaskDetailsRepository,
     private val userTaskRepository: UserTaskRepository,
     private val uiContext: CoroutineContext = Dispatchers.Main
@@ -91,6 +93,7 @@ class TasksPresenter(
         val taskInitializer = UserTaskInitializer(
             taskDetailsRepository,
             userTaskRepository,
+            settings,
             ::initializeUserTasksCallback
         )
         taskInitializer.initializeUserTasks(true)
@@ -105,8 +108,8 @@ class TasksPresenter(
         }
     }
 
-    private fun getTasksDetails(group: String, ids: List<Int>): Job = launch {
-        when (val result = taskDetailsRepository.getTasksDetails(group, ids)) {
+    private fun getTasksDetails(ids: List<Int>): Job = launch {
+        when (val result = taskDetailsRepository.getTasksDetails(ids)) {
             is Result.Success<List<TaskDetails>> -> onTasksForTodayLoaded(result.data)
             is Result.Error -> {
                 //TODO Show a snackbar/toast saying that something went wrong
@@ -133,7 +136,7 @@ class TasksPresenter(
 
     private fun onUserInfoLoaded(userInfo: UserInfo) {
         this.userInfo = userInfo
-        getTasksDetails(userInfo.group, userInfo.userTasks.map { it.id })
+        getTasksDetails(userInfo.userTasks.map { it.id })
     }
 
     private fun onTasksForTodayLoaded(tasks: List<TaskDetails>) {

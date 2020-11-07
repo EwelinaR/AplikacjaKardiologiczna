@@ -46,7 +46,7 @@ class AlarmNotificationReceiver : BroadcastReceiver(), CoroutineScope {
                     val uncompletedTasks = result.data.userTasks.filter { it.time.isNullOrEmpty() }
                     if (uncompletedTasks.isNotEmpty()) {
                         val uncompletedRandomTask = uncompletedTasks.random()
-                        getUncompletedTaskDetails(result.data.group, uncompletedRandomTask)
+                        getUncompletedTaskDetails(uncompletedRandomTask)
                     }
                 }
                 else -> startNotificationService()
@@ -54,8 +54,8 @@ class AlarmNotificationReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun getUncompletedTaskDetails(group: String, task: UserTask): Job = launch {
-        when (val result = taskDetailsRepository.getTasksDetails(group, listOf(task.id))) {
+    private fun getUncompletedTaskDetails(task: UserTask): Job = launch {
+        when (val result = taskDetailsRepository.getTasksDetails(listOf(task.id))) {
             is Result.Success<List<TaskDetails>> -> {
                 result.data.isNotEmpty().let {
                     task.taskDetails = result.data[0]

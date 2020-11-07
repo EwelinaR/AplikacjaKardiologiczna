@@ -7,6 +7,8 @@ import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.main.MainActivity
 import com.github.aplikacjakardiologiczna.model.ErrorMessage
+import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
+import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.buttonConfirm
 import kotlinx.android.synthetic.main.activity_login.editTextUsername
@@ -25,10 +27,12 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
             presenter.onConfirmButtonPressed(editTextUsername.text.toString())
         }
 
+        val dynamoDb = DatabaseManager(this)
         setPresenter(
             LoginPresenter(
                 this,
-                AppSettings(this)
+                AppSettings(this),
+                UserTaskRepository(dynamoDb)
             )
         )
     }
