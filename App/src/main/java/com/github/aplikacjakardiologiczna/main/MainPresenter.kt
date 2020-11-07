@@ -1,7 +1,6 @@
 package com.github.aplikacjakardiologiczna.main
 
 import com.github.aplikacjakardiologiczna.AppSettings
-import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import kotlinx.coroutines.CoroutineScope
@@ -25,10 +24,6 @@ class MainPresenter(
 
     override fun onViewCreated() {
         view?.showHeartView()
-
-        if (settings.firstRun) {
-            initializeFirstUserTasks()
-        }
     }
 
     override fun onHeartTabClicked() {
@@ -48,24 +43,5 @@ class MainPresenter(
 
     override fun onDestroy() {
         this.view = null
-    }
-
-    private fun initializeFirstUserTasks() {
-        val taskInitializer = UserTaskInitializer(
-            taskDetailsRepository,
-            userTaskRepository,
-            settings,
-            ::initializeFirstUserTasksCallback
-        )
-        taskInitializer.initializeUserTasks(true)
-    }
-
-    private fun initializeFirstUserTasksCallback(wasSuccessful: Boolean) {
-        when (wasSuccessful) {
-            true -> settings.firstRun = false
-            false -> {
-                // TODO Do sth
-            }
-        }
     }
 }

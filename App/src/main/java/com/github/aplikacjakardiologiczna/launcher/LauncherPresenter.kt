@@ -21,7 +21,6 @@ class LauncherPresenter(
         this.view = null
     }
 
-    private fun isAppNotSetUp(): Boolean =
-        settings.firstRun || settings.username == null
+    private fun isAppNotSetUp(): Boolean = settings.username == null
 
 }
