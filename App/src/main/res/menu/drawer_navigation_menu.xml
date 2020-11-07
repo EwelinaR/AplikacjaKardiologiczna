@@ -2,13 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_heart"
-        android:icon="@drawable/ic_heart"
-        android:title="@string/all_heart" />
-
-    <item
-        android:id="@+id/navigation_tasks"
-        android:icon="@drawable/ic_check"
-        android:title="@string/all_tasks" />
+        android:id="@+id/navigation_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/all_logout" />
 
 </menu>

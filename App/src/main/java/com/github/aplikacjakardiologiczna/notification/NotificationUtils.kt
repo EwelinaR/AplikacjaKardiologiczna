@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.SystemClock
 import android.util.Log
 import androidx.core.content.ContextCompat
 import java.util.Calendar
@@ -61,5 +60,12 @@ class NotificationUtils(private val activity: Activity) {
 
     fun isAlarmUp(): Boolean = (createPendingIntent(PendingIntent.FLAG_NO_CREATE) != null).also {
         Log.i(ALARM_TAG, "Is alarm up: $it.")
+    }
+
+    fun cancelAlarm(){
+        if(this::alarmManager.isInitialized){
+            alarmManager.cancel(createPendingIntent(PendingIntent.FLAG_CANCEL_CURRENT))
+            Log.i(ALARM_TAG, "Alarm cancelled.")
+        }
     }
 }

@@ -5,14 +5,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.aplikacjakardiologiczna.AppSettings
 import com.github.aplikacjakardiologiczna.R
+import com.github.aplikacjakardiologiczna.extensions.ViewExtensions.hideKeyboard
 import com.github.aplikacjakardiologiczna.main.MainActivity
-import com.github.aplikacjakardiologiczna.model.ErrorMessage
+import com.github.aplikacjakardiologiczna.model.Message
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.buttonConfirm
 import kotlinx.android.synthetic.main.activity_login.editTextUsername
-import kotlinx.android.synthetic.main.activity_login.linearLayoutSetUp
+import kotlinx.android.synthetic.main.activity_login.linearLayoutLogin
 
 
 class LoginActivity : AppCompatActivity(), LoginContract.View {
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
         buttonConfirm.setOnClickListener {
             presenter.onConfirmButtonPressed(editTextUsername.text.toString())
+            linearLayoutLogin.hideKeyboard()
         }
 
         val dynamoDb = DatabaseManager(this)
@@ -39,14 +41,15 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     override fun showMain() {
         val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags =
+            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
         finish()
     }
 
-    override fun showValidationError(errorMessage: ErrorMessage) {
+    override fun showValidationError(message: Message) {
         Snackbar
-            .make(linearLayoutSetUp, errorMessage.stringResourceId, Snackbar.LENGTH_LONG)
+            .make(linearLayoutLogin, message.stringResourceId, Snackbar.LENGTH_LONG)
             .show()
     }
 

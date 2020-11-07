@@ -2,11 +2,16 @@ package com.github.aplikacjakardiologiczna.tasks
 
 import com.github.aplikacjakardiologiczna.BasePresenter
 import com.github.aplikacjakardiologiczna.BaseView
+import com.github.aplikacjakardiologiczna.model.Message
 
 interface TasksContract {
     interface View : BaseView<Presenter> {
         fun onTasksLoaded()
+        fun showNoTasks()
+        fun showTasks()
         fun onTaskMoved(from: Int, to: Int)
+        fun showMessage(message: Message)
+        fun showLoading(isLoading: Boolean)
     }
 
     interface TaskItemView {

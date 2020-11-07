@@ -1,9 +1,7 @@
 package com.github.aplikacjakardiologiczna.main
 
 import com.github.aplikacjakardiologiczna.AppSettings
-import com.github.aplikacjakardiologiczna.model.database.UserTaskInitializer
-import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
-import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
+import com.github.aplikacjakardiologiczna.notification.NotificationUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,8 +10,7 @@ import kotlin.coroutines.CoroutineContext
 class MainPresenter(
     view: MainContract.View,
     private val settings: AppSettings,
-    private val taskDetailsRepository: TaskDetailsRepository,
-    private val userTaskRepository: UserTaskRepository,
+    private val notificationUtils: NotificationUtils,
     private val uiContext: CoroutineContext = Dispatchers.Main
 ) : MainContract.Presenter, CoroutineScope {
 
@@ -24,10 +21,12 @@ class MainPresenter(
         get() = uiContext + job
 
     override fun onViewCreated() {
-        view?.showHeartView()
-
-        if (settings.firstRun) {
-            initializeFirstUserTasks()
+        if (settings.username != null && settings.group != null) {
+            view?.showHeartView()
+            if (!notificationUtils.isAlarmUp())
+                notificationUtils.setAlarm()
+        } else {
+            logout()
         }
     }
 
@@ -39,26 +38,17 @@ class MainPresenter(
         view?.showTasksView()
     }
 
+    override fun logout() {
+        settings.username = null
+        settings.group = null
+
+        if (notificationUtils.isAlarmUp())
+            notificationUtils.cancelAlarm()
+
+        view?.showLogin()
+    }
+
     override fun onDestroy() {
         this.view = null
-    }
-
-    private fun initializeFirstUserTasks() {
-        val taskInitializer = UserTaskInitializer(
-            taskDetailsRepository,
-            userTaskRepository,
-            settings,
-            ::initializeFirstUserTasksCallback
-        )
-        taskInitializer.initializeUserTasks(true)
-    }
-
-    private fun initializeFirstUserTasksCallback(wasSuccessful: Boolean) {
-        when (wasSuccessful) {
-            true -> settings.firstRun = false
-            false -> {
-                // TODO Do sth
-            }
-        }
     }
 }
