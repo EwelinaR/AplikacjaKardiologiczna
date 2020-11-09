@@ -15,7 +15,6 @@ class CustomProgressBar(context: Context?) : View(context) {
     }
 
     private var progressPercent = 0
-    private var barWidth = 0
 
     private val barPaint = Paint()
     private val outlinePaint = Paint()
@@ -48,21 +47,17 @@ class CustomProgressBar(context: Context?) : View(context) {
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
-        val numberOfImages = barWidth / IMG_SIZE
+        val numberOfImages = width / IMG_SIZE
         val fixedBarWidth = (IMG_SIZE * numberOfImages).toFloat()
-        val newX = (barWidth - fixedBarWidth) / 2
+        val newX = (width - fixedBarWidth) / 2
         val end = newX + fixedBarWidth * progressPercent / 100
 
-        canvas.drawRect(newX, 0F, end, IMG_SIZE.toFloat(), barPaint)
+        val top = (height - IMG_SIZE)/2.toFloat()
+        canvas.drawRect(newX + 2, top, end, IMG_SIZE.toFloat() + top, barPaint)
 
         for (i in 0 until numberOfImages) {
-            canvas.drawBitmap(heartBackground, newX + i * IMG_SIZE, 0f, backgroundPaint)
-            canvas.drawBitmap(heartOutline, newX + i * IMG_SIZE, 0f, outlinePaint)
+            canvas.drawBitmap(heartBackground, newX + i * IMG_SIZE, top, backgroundPaint)
+            canvas.drawBitmap(heartOutline, newX + i * IMG_SIZE, top, outlinePaint)
         }
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        barWidth = w
     }
 }
