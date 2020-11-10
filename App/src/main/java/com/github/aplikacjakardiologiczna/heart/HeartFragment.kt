@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
@@ -34,7 +35,8 @@ class HeartFragment : Fragment(), HeartContract.View {
         val view = inflater.inflate(R.layout.fragment_heart, container, false)
 
         progressBar = CustomProgressBar(context)
-        progress_layout.addView(progressBar)
+        val frame: FrameLayout = view.findViewById(R.id.progress_layout)
+        frame.addView(progressBar)
 
         presenter.onCreateView()
 
