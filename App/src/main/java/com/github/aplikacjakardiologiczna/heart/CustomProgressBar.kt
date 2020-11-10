@@ -1,6 +1,5 @@
 package com.github.aplikacjakardiologiczna.heart
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.view.View
@@ -8,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.github.aplikacjakardiologiczna.R
 
 
-@SuppressLint("ResourceAsColor")
 class CustomProgressBar(context: Context?) : View(context) {
     companion object {
         const val IMG_SIZE = 32
@@ -45,7 +43,6 @@ class CustomProgressBar(context: Context?) : View(context) {
         invalidate()
     }
 
-    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         val numberOfImages = width / IMG_SIZE
         val fixedBarWidth = (IMG_SIZE * numberOfImages).toFloat()
@@ -53,7 +50,8 @@ class CustomProgressBar(context: Context?) : View(context) {
         val end = newX + fixedBarWidth * progressPercent / 100
 
         val top = (height - IMG_SIZE)/2.toFloat()
-        canvas.drawRect(newX + 2, top, end, IMG_SIZE.toFloat() + top, barPaint)
+        if(progressPercent > 0)
+            canvas.drawRect(newX + 2, top, end, IMG_SIZE.toFloat() + top, barPaint)
 
         for (i in 0 until numberOfImages) {
             canvas.drawBitmap(heartBackground, newX + i * IMG_SIZE, top, backgroundPaint)

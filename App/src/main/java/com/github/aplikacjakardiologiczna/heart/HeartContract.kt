@@ -5,10 +5,10 @@ import com.github.aplikacjakardiologiczna.BaseView
 
 interface HeartContract {
     interface View : BaseView<Presenter> {
-
+        fun showProgressBar(percent: Int)
     }
 
     interface Presenter : BasePresenter {
-
+        fun onCreateView()
     }
 }

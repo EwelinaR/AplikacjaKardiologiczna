@@ -9,7 +9,6 @@
     tools:context=".heart.HeartFragment">
 
     <ImageView
-        android:id="@+id/heartImage"
         android:layout_width="284dp"
         android:layout_height="194dp"
         android:layout_gravity="center_horizontal|fill_vertical"
