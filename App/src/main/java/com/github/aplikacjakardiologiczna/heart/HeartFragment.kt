@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
+import kotlinx.android.synthetic.main.fragment_heart.*
 
 
 class HeartFragment : Fragment(), HeartContract.View {
@@ -35,8 +34,7 @@ class HeartFragment : Fragment(), HeartContract.View {
         val view = inflater.inflate(R.layout.fragment_heart, container, false)
 
         progressBar = CustomProgressBar(context)
-        val frame: FrameLayout = view.findViewById(R.id.progress_layout)
-        frame.addView(progressBar)
+        progress_layout.addView(progressBar)
 
         presenter.onCreateView()
 
@@ -44,11 +42,10 @@ class HeartFragment : Fragment(), HeartContract.View {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun showProgressBar(percent: Int) {
-        progressBar.setProgressPercent(percent)
+    override fun showProgressBar(percentValue: Int) {
+        progressBar.setProgressPercent(percentValue)
 
-        val percentText: TextView = view!!.findViewById(R.id.percent)
-        percentText.text = "$percent%"
+        percent.text = "$percentValue%"
     }
 
     override fun setPresenter(presenter: HeartContract.Presenter) {

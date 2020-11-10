@@ -1,5 +1,6 @@
 package com.github.aplikacjakardiologiczna.heart
 
+import android.util.Log
 import com.github.aplikacjakardiologiczna.AppConstants
 import com.github.aplikacjakardiologiczna.model.database.Result
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
@@ -29,7 +30,7 @@ class HeartPresenter(
     private fun setTasksPercent(): Job = launch {
         when (val result = userTaskRepository.getUserInfo()) {
             is Result.Success<UserInfo> -> onTaskDownloaded(result.data)
-            is Result.Error -> {}
+            is Result.Error -> Log.w("TASKS", "No tasks available.")
         }
     }
 
