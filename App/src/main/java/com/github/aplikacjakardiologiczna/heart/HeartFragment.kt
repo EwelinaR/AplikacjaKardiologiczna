@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
@@ -32,15 +31,15 @@ class HeartFragment : Fragment(), HeartContract.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_heart, container, false)
+        return inflater.inflate(R.layout.fragment_heart, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         progressBar = CustomProgressBar(context)
-        val frame: FrameLayout = view.findViewById(R.id.progress_layout)
-        frame.addView(progressBar)
-
+        progress_layout.addView(progressBar)
         presenter.onCreateView()
-
-        return view
     }
 
     @SuppressLint("SetTextI18n")

@@ -30,7 +30,10 @@ class HeartPresenter(
     private fun setTasksPercent(): Job = launch {
         when (val result = userTaskRepository.getUserInfo()) {
             is Result.Success<UserInfo> -> onTaskDownloaded(result.data)
-            is Result.Error -> Log.w("TASKS", "No tasks available.")
+            is Result.Error -> {
+                Log.w("TASKS", "No tasks available.")
+                view?.showProgressBar(0)
+            }
         }
     }
 
