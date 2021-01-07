@@ -10,6 +10,7 @@ import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFo
 import com.github.aplikacjakardiologiczna.model.database.entity.TaskDetails
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.google.gson.Gson
+import java.lang.Exception
 import java.util.Calendar
 
 class DatabaseManager constructor(context: Context) {
@@ -26,18 +27,42 @@ class DatabaseManager constructor(context: Context) {
     private fun getTodaysTime(): String = Calendar.getInstance().now.polishTimeFormat
 
     fun markTaskAsCompleted(taskId: Int) {
-        databaseAccess.writeTimeOfTask(taskId, getTodaysDate(), getTodaysTime(), settings.username!!)
+        databaseAccess.writeTimeOfTask(taskId, getTodaysTime(), settings.userTasksId!!)
         Log.i(DB_TAG, "Completed task: $taskId")
     }
 
     fun createTasks(userInfo: UserInfo) {
+        val id = databaseAccess.getHistoryNextId()
+        userInfo.id = id
         val jsonUserInfo: String = Gson().toJson(userInfo)
         databaseAccess.addUserInfo(jsonUserInfo)
         Log.i(DB_TAG, jsonUserInfo)
     }
 
+    private fun getUserTaskId(): String? {
+        val doc = databaseAccess.readUserTaskId(getTodaysDate(), settings.username!!)
+
+        val time: String? = doc.items.mapNotNull {
+            it["time"]?.s
+        }.maxOrNull()
+
+        time?.let {
+            val id: String = doc.items.filter {
+                it["time"]?.s.toString().equals(time)
+            }.mapNotNull {
+                it["id"]?.n
+            } .first()
+
+            settings.userTasksId = id
+            Log.i(DB_TAG, id)
+            return id
+        }
+        return null
+    }
+
     fun getUserInfo(): UserInfo {
-        val doc = databaseAccess.readUserInfo(getTodaysDate(), settings.username!!)
+        val id = getUserTaskId() ?: throw Exception("No task for today found.")
+        val doc = databaseAccess.readUserInfo(id)
         val user = Gson().fromJson(Document.toJson(doc), UserInfo::class.java)
         Log.i(DB_TAG, user.toString())
         return user

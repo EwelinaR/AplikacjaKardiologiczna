@@ -8,5 +8,5 @@ object DynamoDBHelper {
     val COGNITO_IDP_REGION = Regions.EU_CENTRAL_1
     val REGION = Region.getRegion(COGNITO_IDP_REGION)
     const val TASK_TABLE_NAME = "Task"
-    const val USER_TABLE_NAME = "User"
+    const val HISTORY_TABLE_NAME = "History"
 }
