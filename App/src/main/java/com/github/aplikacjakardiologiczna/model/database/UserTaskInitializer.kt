@@ -2,9 +2,11 @@ package com.github.aplikacjakardiologiczna.model.database
 
 import com.github.aplikacjakardiologiczna.AppConstants
 import com.github.aplikacjakardiologiczna.AppSettings
+import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.now
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.startOfToday
 import com.github.aplikacjakardiologiczna.extensions.CalendarExtensions.startOfTomorrow
 import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishDateFormat
+import com.github.aplikacjakardiologiczna.extensions.DateExtensions.polishTimeFormat
 import com.github.aplikacjakardiologiczna.model.database.entity.UserInfo
 import com.github.aplikacjakardiologiczna.model.database.entity.UserTask
 import com.github.aplikacjakardiologiczna.model.database.repository.TaskDetailsRepository
@@ -51,7 +53,8 @@ class UserTaskInitializer(
         taskIds.mapIndexedTo (userTasks, {
                 index, taskId -> UserTask(taskId, index, null, null)
         })
-        val userInfo = UserInfo(settings.username!!, settings.group!!, startDate, userTasks)
+        val userInfo = UserInfo(settings.username!!, settings.group!!,
+                startDate, Calendar.getInstance().now.polishTimeFormat, userTasks)
 
         val result = userTaskRepository.insertUserTasks(userInfo)
         callback(result is Result.Success<Unit>)
