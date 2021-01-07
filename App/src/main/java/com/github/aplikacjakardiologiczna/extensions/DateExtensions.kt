@@ -17,8 +17,9 @@ object DateExtensions {
 
     val Date.polishTimeFormat: String
         get() {
+            val timeZone = TimeZone.getTimeZone("Europe/Warsaw")
             val dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT, polishLocale)
-            dateFormat.timeZone = TimeZone.getTimeZone("Europe/Warsaw")
+            dateFormat.timeZone = timeZone
             return dateFormat.format(this)
         }
 }
