@@ -13,8 +13,8 @@ class NotificationUtils(private val activity: Activity) {
     companion object {
         private const val NOTIFICATION_TAG = "NOTIFICATION"
         private const val ALARM_TAG = "ALARM"
-        private const val HOUR_OF_NOTIFICATION = 21
-        private const val MINUTE_OF_NOTIFICATION = 1
+        private const val HOUR_OF_NOTIFICATION = 15
+        private const val MINUTE_OF_NOTIFICATION = 40
         private const val PENDING_INTENT_REQUEST_CODE = 10
     }
 

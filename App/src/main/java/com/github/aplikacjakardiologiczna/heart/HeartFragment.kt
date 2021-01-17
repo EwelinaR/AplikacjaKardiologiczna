@@ -9,7 +9,8 @@ import androidx.fragment.app.Fragment
 import com.github.aplikacjakardiologiczna.R
 import com.github.aplikacjakardiologiczna.model.database.dynamodb.DatabaseManager
 import com.github.aplikacjakardiologiczna.model.database.repository.UserTaskRepository
-import kotlinx.android.synthetic.main.fragment_heart.*
+import kotlinx.android.synthetic.main.fragment_heart.percent
+import kotlinx.android.synthetic.main.fragment_heart.progress_layout
 
 
 class HeartFragment : Fragment(), HeartContract.View {
@@ -46,7 +47,7 @@ class HeartFragment : Fragment(), HeartContract.View {
     override fun showProgressBar(percentValue: Int) {
         progressBar.setProgressPercent(percentValue)
 
-        percent.text = "$percentValue%"
+        percentValue?.let { percent?.text = "$percentValue%" }
     }
 
     override fun setPresenter(presenter: HeartContract.Presenter) {
